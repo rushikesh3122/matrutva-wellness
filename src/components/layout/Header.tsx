@@ -5,10 +5,8 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { Menu, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { orderHref } from "@/lib/site";
 import { useCart } from "@/context/CartContext";
 import { BrandLogo } from "@/components/brand/BrandLogo";
-import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { DesktopNavigation } from "./DesktopNavigation";
 
 // The menu drawer loads only when first opened, keeping the initial page light.
@@ -61,11 +59,10 @@ export function Header() {
               )}
             </Link>
             <Link
-              href={orderHref()}
+              href="/shop/spirulina-capsules"
               className="hidden items-center gap-2 rounded-full bg-emerald px-5 py-2.5 font-mono text-sm tracking-[0.15em] text-ivory uppercase transition-colors hover:bg-teal-deep sm:inline-flex"
             >
-              <WhatsAppIcon className="size-4" />
-              Order
+              Shop now
             </Link>
             <button
               type="button"
