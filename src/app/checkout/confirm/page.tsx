@@ -10,7 +10,9 @@ export default function ConfirmPage() {
       <div className="container-luxe pt-12 pb-24 md:pt-16">
         <h1 className="font-display text-[clamp(2.25rem,1.6rem+2.4vw,3.4rem)] leading-tight text-emerald">Confirm your order</h1>
         <CheckoutSteps current={3} />
-        <OrderConfirm />
+        <div className="min-h-[40rem]">
+          <OrderConfirm />
+        </div>
       </div>
     </section>
   );

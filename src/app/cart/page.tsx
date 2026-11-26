@@ -14,7 +14,10 @@ export default function CartPage() {
             Continue shopping
           </Link>
         </div>
-        <CartSummary />
+        {/* Reserved height keeps the footer still while the saved cart loads (no layout shift). */}
+        <div className="min-h-[34rem]">
+          <CartSummary />
+        </div>
       </div>
     </section>
   );

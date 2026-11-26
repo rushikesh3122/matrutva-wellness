@@ -30,15 +30,17 @@ export default function OurStoryPage() {
 
       <section className="border-y border-forest/10 bg-ivory">
         <div className="container-luxe grid items-center gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-28">
-          <Reveal className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-figure bg-ivory-dark">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-figure bg-ivory-dark">
             <Image
               src="/images/products/white-bottle-hero.jpg"
               alt="Matrutva Wellness Spirulina Capsules bottle beside natural stone"
               fill
+              preload
+              fetchPriority="high"
               sizes="(min-width: 768px) 448px, 90vw"
               className="object-cover"
             />
-          </Reveal>
+          </div>
           <Reveal className="max-w-lg space-y-6 text-lg leading-[1.7] text-forest/75">
             <p>
               Matrutva Wellness began with a simple question: how would a mother choose nutrition for her family? She would look for something pure,

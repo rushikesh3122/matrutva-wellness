@@ -39,15 +39,17 @@ export default function DiscoverSpirulinaPage() {
 
       <section aria-labelledby="what-title" className="border-y border-forest/10 bg-ivory">
         <div className="container-luxe grid items-center gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-28">
-          <Reveal className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-figure bg-white">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-figure bg-white">
             <Image
               src="/images/products/white-bottle-front.jpg"
               alt="Matrutva Wellness Spirulina Capsules bottle"
               fill
+              preload
+              fetchPriority="high"
               sizes="(min-width: 768px) 448px, 90vw"
               className="object-contain p-6"
             />
-          </Reveal>
+          </div>
           <div>
             <p className="eyebrow text-teal-deep">What it is</p>
             <h2 id="what-title" className="mt-5 font-display text-[clamp(2.1rem,1.5rem+2.2vw,3.2rem)] leading-[1.12] tracking-[-0.02em] text-emerald">

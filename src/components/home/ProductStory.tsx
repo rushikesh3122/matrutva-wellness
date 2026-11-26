@@ -9,6 +9,7 @@ export function ProductStory({
   product,
   imageFirst = true,
   imageIndex = 1,
+  priority = false,
   headingLevel: H = "h2",
 }: {
   product: Product;
@@ -16,17 +17,27 @@ export function ProductStory({
   /** Which product image to show (defaults to the studio front shot) */
   imageIndex?: number;
   headingLevel?: "h2" | "h3";
+  /** Set on the first section of a page, where the image is the largest paint */
+  priority?: boolean;
 }) {
   const image = product.images[imageIndex] ?? product.images[0];
   const price = product.price ? formatPrice(product.price) : null;
   return (
     <section id={product.slug} aria-labelledby={`${product.slug}-title`} className="scroll-mt-24 border-b border-forest/10 bg-ivory">
       <div className="container-luxe grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-24 lg:gap-24 lg:py-28">
-        <Reveal className={cn("mx-auto w-full max-w-md", !imageFirst && "md:order-2")}>
+        <div className={cn("mx-auto w-full max-w-md", !priority && "reveal", !imageFirst && "md:order-2")}>
           <Link href={`/shop/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden rounded-figure bg-white">
-            <Image src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 448px, 90vw" className="object-contain p-6" />
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              preload={priority}
+              fetchPriority={priority ? "high" : undefined}
+              sizes="(min-width: 768px) 448px, 90vw"
+              className="object-contain p-6"
+            />
           </Link>
-        </Reveal>
+        </div>
 
         <Reveal className={cn("max-w-[30rem]", !imageFirst && "md:order-1")}>
           {product.eyebrow && <p className="eyebrow text-teal-deep">{product.eyebrow}</p>}
