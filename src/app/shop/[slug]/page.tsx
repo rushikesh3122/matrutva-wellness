@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -31,7 +32,16 @@ export async function generateMetadata({ params }: PageProps<"/shop/[slug]">): P
   };
 }
 
-export default async function ProductPage({ params }: PageProps<"/shop/[slug]">) {
+/** Reads the URL param inside Suspense so the page shell can be prefetched for instant navigation. */
+export default function Page({ params }: PageProps<"/shop/[slug]">) {
+  return (
+    <Suspense fallback={<div aria-hidden className="bg-ivory"><div className="container-luxe grid gap-12 pt-8 pb-20 md:pt-12 lg:grid-cols-2 lg:gap-20"><div className="aspect-[4/5] animate-pulse rounded-figure bg-sage/60" /><div className="space-y-6 lg:pt-6"><div className="h-4 w-40 rounded bg-sage/60" /><div className="h-14 w-3/4 rounded bg-sage/60" /><div className="h-24 rounded bg-sage/50" /></div></div></div>}>
+      <ProductDetails params={params} />
+    </Suspense>
+  );
+}
+
+async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "params">) {
   const { slug } = await params;
   const product = getProductBySlug(slug);
   if (!product) notFound();

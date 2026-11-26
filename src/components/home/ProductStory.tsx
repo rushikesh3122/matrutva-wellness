@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/types/product";
-import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { cn, formatPrice } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -48,14 +47,12 @@ export function ProductStory({
           )}
 
           <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <BuyNowButton
-              product={product}
-              className="inline-flex items-center gap-3 rounded-full bg-teal-deep px-7 py-3.5 font-medium text-ivory transition-colors hover:bg-emerald disabled:opacity-50"
+            <Link
+              href={`/shop/${product.slug}`}
+              className="inline-flex items-center gap-3 rounded-full bg-teal-deep px-7 py-3.5 font-medium text-ivory transition-colors hover:bg-emerald"
             >
-              {price ? `Buy now · ${price}` : "Buy now"}
-            </BuyNowButton>
-            <Link href={`/shop/${product.slug}`} className="eyebrow text-[0.66rem] text-forest/70 underline-offset-4 hover:text-teal-deep hover:underline">
-              View details
+              {price ? `Shop · ${price}` : "Shop now"}
+              <span aria-hidden>→</span>
             </Link>
           </div>
           <p className="eyebrow mt-5 text-[0.62rem] tracking-[0.2em] text-forest/65">{product.quantity}</p>
