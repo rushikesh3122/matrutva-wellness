@@ -40,7 +40,7 @@ export function HeroSection() {
             src={hero.image.src}
             alt={hero.image.alt}
             fill
-            priority
+            preload
             fetchPriority="high"
             sizes="(min-width: 768px) 448px, 90vw"
             className="object-cover"

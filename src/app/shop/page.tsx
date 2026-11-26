@@ -20,7 +20,7 @@ export default function ShopPage() {
       />
       <div className="border-t border-forest/10">
         {products.map((product, i) => (
-          <ProductStory key={product.id} product={product} imageFirst={i % 2 === 0} />
+          <ProductStory key={product.id} product={product} imageFirst={i % 2 === 0} priority={i === 0} />
         ))}
       </div>
       <OrderCta />

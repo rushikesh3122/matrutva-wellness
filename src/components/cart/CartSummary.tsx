@@ -5,18 +5,17 @@ import Link from "next/link";
 import { HandHeart, Leaf, MessageCircleHeart, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { PrimaryButton } from "@/components/ui/Button";
 
 /** Cart in a simple table: Product · Quantity · Total, then the estimated total and "Check out". */
 export function CartSummary() {
   const { items, ready, subtotal, updateQuantity, removeItem } = useCart();
 
-  if (!ready) return <div className="mt-10 h-64 animate-pulse rounded-figure bg-sage/50" aria-hidden />;
-
-  if (items.length === 0) {
+  // Until the saved cart is read, render the empty state invisibly: same size, so nothing shifts.
+  if (!ready || items.length === 0) {
     return (
-      <div className="mt-10 flex flex-col items-center gap-6 border-y border-forest/10 py-16 text-center">
+      <div aria-hidden={!ready || undefined} className={cn("mt-10 flex flex-col items-center gap-6 border-y border-forest/10 py-16 text-center", !ready && "invisible")}>
         <ShoppingBag className="size-10 text-teal-deep" strokeWidth={1.25} aria-hidden />
         <p className="text-forest/80">Your cart is empty.</p>
         <PrimaryButton href="/shop/spirulina-capsules">Shop spirulina</PrimaryButton>

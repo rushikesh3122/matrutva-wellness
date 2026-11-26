@@ -17,7 +17,7 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
           src={current.src}
           alt={current.alt}
           fill
-          priority={active === 0}
+          preload={active === 0}
           fetchPriority={active === 0 ? "high" : undefined}
           sizes="(min-width: 1024px) 40vw, 90vw"
           className="object-contain"

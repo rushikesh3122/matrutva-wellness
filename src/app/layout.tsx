@@ -5,7 +5,6 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileShopBar } from "@/components/layout/MobileShopBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CartProvider } from "@/context/CartContext";
-import { MotionProvider } from "@/components/providers/MotionProvider";
 import { siteConfig } from "@/lib/site";
 import { organizationJsonLd, siteUrl } from "@/lib/seo";
 import "./globals.css";
@@ -80,7 +79,11 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     url: "/",
   },
-  twitter: { card: "summary_large_image", title: defaultTitle, description: siteConfig.description },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: siteConfig.description,
+  },
   robots: { index: true, follow: true },
   formatDetection: { telephone: false },
 };
@@ -93,7 +96,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={`${kalnia.variable} ${figtree.variable} ${cinzel.variable} ${dmMono.variable} ${tiro.variable} h-full`}>
+    <html
+      lang="en-IN"
+      className={`${kalnia.variable} ${figtree.variable} ${cinzel.variable} ${dmMono.variable} ${tiro.variable} h-full`}
+    >
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
@@ -101,16 +107,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <MotionProvider>
-          <CartProvider>
-            <Header />
-            <main id="main" className="flex-1">
-              {children}
-            </main>
-            <Footer />
-            <MobileShopBar />
-          </CartProvider>
-        </MotionProvider>
+        <CartProvider>
+          <Header />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <MobileShopBar />
+        </CartProvider>
         <JsonLd data={organizationJsonLd()} />
       </body>
     </html>

@@ -10,7 +10,9 @@ export default function CheckoutPage() {
       <div className="container-luxe pt-12 pb-24 md:pt-16">
         <h1 className="font-display text-[clamp(2.25rem,1.6rem+2.4vw,3.4rem)] leading-tight text-emerald">Checkout</h1>
         <CheckoutSteps current={2} />
-        <CheckoutForm />
+        <div className="min-h-[40rem]">
+          <CheckoutForm />
+        </div>
       </div>
     </section>
   );
