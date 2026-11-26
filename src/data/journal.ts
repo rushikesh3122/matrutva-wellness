@@ -26,7 +26,7 @@ export const journalPosts: JournalPost[] = [
     excerpt: "What to look for in ingredients, serving sizes and batch details, so you can choose with confidence.",
     category: "Transparency",
     readingTime: "6 min read",
-    image: { src: "/images/brand/front-label.jpg", alt: "Front label of a Matrutva Wellness spirulina pack" },
+    image: { src: "/images/brand/shipping-box-wide.jpg", alt: "Matrutva Wellness emerald packaging with a peacock feather design" },
     date: "2026-11-15",
   },
 ];

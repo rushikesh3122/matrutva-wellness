@@ -8,6 +8,8 @@
  *  - Nutrition facts are general (from published literature) unless they come from your product label.
  */
 
+import type { BrandIconName } from "@/components/ui/BrandIcon";
+
 export const hero = {
   eyebrow: "Premium Indian Spirulina",
   title: ["Nature's Finest Nutrition.", "A Better Everyday."],
@@ -98,4 +100,64 @@ export const discover = {
   },
   disclaimer: "Spirulina is a food supplement, not a substitute for a varied diet. Consult your doctor if you are pregnant, nursing or on medication.",
   cta: { label: "Learn More About Spirulina", href: "/discover-spirulina" },
+};
+
+export const story = {
+  eyebrow: "Our Story",
+  title: "Born From a Mother's Instinct to Nourish",
+  paragraphs: [
+    "Matrutva Wellness began with a simple question: how would a mother choose nutrition for her family? She would look for something pure, honest and genuinely nourishing.",
+    "Inspired by India's timeless respect for nature and the grace of the peacock, we bring spirulina to modern Indian homes, presented with the care it deserves.",
+  ],
+  quote: "Nourishment with a Mother's Care",
+  cta: { label: "Read Our Story", href: "/our-story" },
+  images: {
+    main: { src: "/images/brand/bottle-feather-stone.jpg", alt: "Matrutva Wellness bottle with a peacock feather on natural stone" },
+    secondary: { src: "/images/brand/shipping-box.jpg", alt: "Matrutva Wellness emerald packaging box" },
+  },
+};
+
+export const quality = {
+  eyebrow: "Quality & Transparency",
+  title: "Know Exactly What You Are Taking",
+  description: "We believe trust is earned with information. Here is what we share with every product.",
+  pillars: [
+    { icon: "leaf", title: "Ingredient Information", text: "Every ingredient is listed clearly on the label. No hidden fillers." },
+    { icon: "shield", title: "Quality Assurance", text: "Defined quality checks at sourcing, processing and packing." },
+    { icon: "flask", title: "Laboratory Testing", text: "Batch testing details will be published here as reports become available." },
+    { icon: "file", title: "Product Transparency", text: "Batch number, manufacturing and expiry dates on every pack." },
+  ] as { icon: BrandIconName; title: string; text: string }[],
+  /** Replace with real certificates / lab reports. Leave `href` empty until a document exists. */
+  documents: [
+    { title: "Batch lab report", status: "Coming soon", href: "" },
+    { title: "Licences & registrations", status: "Coming soon", href: "" },
+    { title: "Ingredient specification", status: "Coming soon", href: "" },
+  ],
+  cta: { label: "Our Quality Promise", href: "/quality" },
+};
+
+/** "From Nature to You" journey. Edit the descriptions to match your actual process. */
+export const process = {
+  eyebrow: "From Nature to You",
+  title: "A Careful Journey, Step by Step",
+  steps: [
+    { icon: "map", title: "Sourcing", text: "Partnering with trusted spirulina growers." },
+    { icon: "droplets", title: "Cultivation", text: "Grown in clean, controlled water ponds." },
+    { icon: "sprout", title: "Harvesting", text: "Harvested fresh at the right stage." },
+    { icon: "factory", title: "Processing", text: "Gently dried to protect its nutrition." },
+    { icon: "flask", title: "Quality Testing", text: "Checked against our quality standards." },
+    { icon: "package", title: "Packaging", text: "Sealed in our protective emerald pack." },
+  ] as { icon: BrandIconName; title: string; text: string }[],
+};
+
+export const testimonialsSection = {
+  eyebrow: "Kind Words",
+  title: "Loved by Families",
+  note: "Sample reviews shown for layout. Real customer reviews will appear here after launch.",
+};
+
+export const journalSection = {
+  eyebrow: "Wellness Journal",
+  title: "Notes on Natural Living",
+  cta: { label: "Visit the Journal", href: "/journal" },
 };
