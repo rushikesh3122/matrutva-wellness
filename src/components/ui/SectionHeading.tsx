@@ -25,7 +25,7 @@ export function SectionHeading({
   description,
   align = "center",
   tone = "dark",
-  ornament = true,
+  ornament = false,
   as: Tag = "h2",
   className,
 }: SectionHeadingProps) {
@@ -75,7 +75,7 @@ export function SectionHeading({
       <div className={reveal} style={stagger(1)}>
         <Tag
           className={cn(
-            "font-display text-3xl leading-tight font-medium text-balance sm:text-4xl lg:text-5xl",
+            "font-display text-[clamp(2.1rem,1.5rem+2.2vw,3.4rem)] leading-[1.15] font-light tracking-[-0.02em] text-balance",
             dark ? "text-emerald" : "text-ivory",
           )}
         >

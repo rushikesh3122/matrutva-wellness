@@ -7,22 +7,21 @@ export type ButtonVariant = "primary" | "gold" | "outline" | "ghost" | "light";
 export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 const base =
-  "group/btn relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full font-sans font-medium uppercase tracking-[0.18em] transition-all duration-500 ease-luxe disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
+  "group/btn relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full font-sans font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
 
+// Figma style: solid pills in Figtree, no capitals.
 const variants: Record<ButtonVariant, string> = {
-  primary:
-    "bg-emerald text-ivory shadow-soft hover:bg-emerald-light hover:shadow-lift hover:-translate-y-0.5",
-  gold: "bg-gradient-to-r from-gold-dark via-gold to-gold-light text-emerald shadow-soft hover:shadow-lift hover:-translate-y-0.5",
-  outline:
-    "border border-emerald/30 text-emerald hover:border-gold hover:bg-emerald hover:text-ivory",
+  primary: "bg-teal-deep text-ivory hover:bg-emerald",
+  gold: "bg-ivory text-emerald hover:bg-white",
+  outline: "border border-forest/20 text-emerald hover:border-emerald hover:bg-emerald hover:text-ivory",
   ghost: "text-emerald hover:bg-emerald/5",
   light: "border border-ivory/40 text-ivory hover:bg-ivory hover:text-emerald",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "h-9 px-4 text-[0.65rem]",
-  md: "h-11 px-6 text-xs",
-  lg: "h-14 px-9 text-sm",
+  sm: "h-10 px-5 text-sm",
+  md: "h-12 px-7 text-base",
+  lg: "h-14 px-8 text-base",
   icon: "size-11 p-0",
 };
 

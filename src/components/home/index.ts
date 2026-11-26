@@ -1,6 +1,8 @@
 export { HeroSection } from "./HeroSection";
 export { StatsStrip } from "./StatsStrip";
 export { ProductStory } from "./ProductStory";
+export { InsideSection } from "./InsideSection";
 export { PromiseSection } from "./PromiseSection";
 export { RitualSection } from "./RitualSection";
+export { FaqSection } from "./FaqSection";
 export { OrderCta } from "./OrderCta";
