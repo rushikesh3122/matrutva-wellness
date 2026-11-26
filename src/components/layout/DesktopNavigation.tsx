@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export function DesktopNavigation({ items = mainNav, className }: { items?: NavItem[]; className?: string }) {
   return (
     <nav aria-label="Main" className={className}>
-      <ul className="flex items-center gap-10">
+      <ul className="flex items-center gap-8 xl:gap-10">
         {items.map((item) => (
           <li key={item.href}>
             <Link
