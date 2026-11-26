@@ -20,8 +20,6 @@ const nextConfig: NextConfig = {
   experimental: {
     // Ship only the icons / animation helpers actually used
     optimizePackageImports: ["lucide-react", "framer-motion"],
-    // Put the (small, Tailwind-generated) CSS straight into the HTML: no render-blocking request
-    inlineCss: true,
   },
   async headers() {
     return [
