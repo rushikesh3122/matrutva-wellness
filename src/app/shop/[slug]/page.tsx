@@ -6,6 +6,7 @@ import { orderHref, siteConfig } from "@/lib/site";
 import { formatPrice } from "@/lib/utils";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCart } from "@/components/product/AddToCart";
+import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { LabelDetails } from "@/components/product/LabelDetails";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { FaqList } from "@/components/ui/FaqList";
@@ -56,6 +57,16 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
       : {}),
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${siteUrl}/shop` },
+      { "@type": "ListItem", position: 3, name: product.name, item: `${siteUrl}/shop/${product.slug}` },
+    ],
+  };
+
   return (
     <>
       <section className="bg-ivory">
@@ -63,11 +74,24 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
           <ProductGallery images={product.images} />
 
           <div className="lg:pt-6">
-            <nav aria-label="Breadcrumb" className="eyebrow text-[0.62rem] text-forest/65">
-              <Link href="/shop" className="hover:text-emerald">
-                Shop
-              </Link>{" "}
-              / <span aria-current="page">{product.name}</span>
+            <nav aria-label="Breadcrumb" className="text-xs text-forest/70">
+              <ol className="flex flex-wrap items-center gap-x-2">
+                <li>
+                  <Link href="/" className="inline-block py-1 hover:text-emerald">
+                    Home
+                  </Link>
+                </li>
+                <li aria-hidden>›</li>
+                <li>
+                  <Link href="/shop" className="inline-block py-1 hover:text-emerald">
+                    Shop
+                  </Link>
+                </li>
+                <li aria-hidden>›</li>
+                <li aria-current="page" className="text-emerald">
+                  {product.name}
+                </li>
+              </ol>
             </nav>
             {product.eyebrow && <p className="eyebrow mt-8 text-teal-deep">{product.eyebrow}</p>}
             <h1 className="mt-4 font-display text-[clamp(2.5rem,1.6rem+3vw,4rem)] leading-[1.08] tracking-[-0.02em] text-emerald">
@@ -93,7 +117,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
               </dl>
             )}
 
-            <div className="mt-10 flex flex-col gap-4">
+            <div id="buy-box" className="mt-10 flex flex-col gap-4">
               <Link
                 href={orderHref(`Hi Matrutva Wellness, I'd like to order ${product.name}${price ? ` (${price})` : ""}.`)}
                 className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald sm:w-auto sm:self-start"
@@ -135,6 +159,8 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
       )}
 
       <JsonLd data={productJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
+      <StickyBuyBar product={product} />
     </>
   );
 }
