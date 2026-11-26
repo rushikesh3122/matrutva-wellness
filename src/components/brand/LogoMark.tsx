@@ -82,8 +82,8 @@ export function LogoMark({ variant = "color", className, title = "Matrutva Welln
       {title && <title>{title}</title>}
       <defs>
         <linearGradient id={id("neck")} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#0E5A47" />
-          <stop offset="1" stopColor="#003D32" />
+          <stop offset="0" stopColor="#1D5A43" />
+          <stop offset="1" stopColor="#0F3D2E" />
         </linearGradient>
         <linearGradient id={id("teal")} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#0E7A78" />
@@ -161,7 +161,7 @@ export function LogoMark({ variant = "color", className, title = "Matrutva Welln
           cy="126"
           rx="8"
           ry="10"
-          fill={variant === "mono" ? "var(--color-ivory)" : "#003D32"}
+          fill={variant === "mono" ? "var(--color-ivory)" : "#0F3D2E"}
           opacity="0.9"
         />
       )}

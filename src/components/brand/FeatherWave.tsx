@@ -16,9 +16,9 @@ export function FeatherWave({ className, flip = false }: { className?: string; f
     >
       <defs>
         <linearGradient id={`${uid}-t`} x1="0" x2="1">
-          <stop offset="0" stopColor="#006B70" stopOpacity="0.15" />
-          <stop offset="0.5" stopColor="#006B70" />
-          <stop offset="1" stopColor="#0E8A8A" stopOpacity="0.4" />
+          <stop offset="0" stopColor="#0E687A" stopOpacity="0.15" />
+          <stop offset="0.5" stopColor="#0E687A" />
+          <stop offset="1" stopColor="#1B8496" stopOpacity="0.4" />
         </linearGradient>
         <linearGradient id={`${uid}-g`} x1="0" x2="1">
           <stop offset="0" stopColor="#C9A66A" stopOpacity="0" />

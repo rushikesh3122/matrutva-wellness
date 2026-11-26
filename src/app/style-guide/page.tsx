@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 };
 
 const colours = [
-  { name: "Primary Emerald", hex: "#003D32", cls: "bg-emerald text-ivory", token: "emerald" },
-  { name: "Peacock Teal", hex: "#006B70", cls: "bg-teal text-ivory", token: "teal" },
+  { name: "Primary Emerald", hex: "#0F3D2E", cls: "bg-emerald text-ivory", token: "emerald" },
+  { name: "Peacock Teal", hex: "#0E687A", cls: "bg-teal text-ivory", token: "teal" },
   { name: "Muted Gold", hex: "#C9A66A", cls: "bg-gold text-emerald", token: "gold" },
   { name: "Deep Gold (text)", hex: "#7D5F28", cls: "bg-gold-deep text-ivory", token: "gold-deep" },
   { name: "Warm Ivory", hex: "#F6F0E4", cls: "bg-ivory text-emerald ring-1 ring-gold/30", token: "ivory" },

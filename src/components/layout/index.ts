@@ -4,3 +4,4 @@ export { DesktopNavigation } from "./DesktopNavigation";
 export { MobileNavigation } from "./MobileNavigation";
 export { SearchOverlay } from "./SearchOverlay";
 export { Footer } from "./Footer";
+export { MobileShopBar } from "./MobileShopBar";

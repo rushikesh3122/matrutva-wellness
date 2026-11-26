@@ -85,8 +85,8 @@ src/
 
 | Colour          | Hex       | Class            | Use                                         |
 | --------------- | --------- | ---------------- | ------------------------------------------- |
-| Primary Emerald | `#003D32` | `emerald`        | primary buttons, footer, headings           |
-| Peacock Teal    | `#006B70` | `teal`           | labels, links, accents                      |
+| Deep Green      | `#0F3D2E` | `emerald`        | primary buttons, footer, headings           |
+| Peacock Teal    | `#0E687A` | `teal`           | labels, links, accents                      |
 | Muted Gold      | `#C9A66A` | `gold`           | lines, icons, logo, text on dark            |
 | Deep Gold       | `#7D5F28` | `gold-deep`      | gold text on light backgrounds (accessible) |
 | Warm Ivory      | `#F6F0E4` | `ivory`          | page background                             |

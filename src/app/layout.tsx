@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MobileShopBar } from "@/components/layout/MobileShopBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CartProvider } from "@/context/CartContext";
 import { MotionProvider } from "@/components/providers/MotionProvider";
@@ -82,7 +83,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#003D32",
+  themeColor: "#0F3D2E",
   width: "device-width",
   initialScale: 1,
 };
@@ -104,6 +105,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               {children}
             </main>
             <Footer />
+            <MobileShopBar />
           </CartProvider>
         </MotionProvider>
         <JsonLd data={organizationJsonLd()} />

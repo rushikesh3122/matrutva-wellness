@@ -33,8 +33,8 @@ export const trustItems = [
 ] as const;
 
 export const featured = {
-  eyebrow: "Our Collection",
-  title: "Thoughtfully Crafted Nutrition",
+  eyebrow: "Chapter 07 · Your Daily Ritual",
+  title: "Choose Your Spirulina",
   description: "Begin with our signature spirulina capsules. More ways to enjoy spirulina are on their way.",
   cta: { label: "View all products", href: "/shop" },
 };
@@ -73,7 +73,7 @@ export const why = {
 };
 
 export const discover = {
-  eyebrow: "Discover Spirulina",
+  eyebrow: "Chapter 03 · The Ingredient",
   watermark: "Spirulina",
   title: "A Tiny Spiral With Remarkable Nutrition",
   intro:
@@ -103,7 +103,7 @@ export const discover = {
 };
 
 export const story = {
-  eyebrow: "Our Story",
+  eyebrow: "Chapter 01 · Why We Began",
   title: "Born From a Mother's Instinct to Nourish",
   paragraphs: [
     "Matrutva Wellness began with a simple question: how would a mother choose nutrition for her family? She would look for something pure, honest and genuinely nourishing.",
@@ -118,7 +118,7 @@ export const story = {
 };
 
 export const quality = {
-  eyebrow: "Quality & Transparency",
+  eyebrow: "Chapter 06 · Our Promise",
   title: "Know Exactly What You Are Taking",
   description: "We believe trust is earned with information. Here is what we share with every product.",
   pillars: [
@@ -138,7 +138,7 @@ export const quality = {
 
 /** "From Nature to You" journey. Edit the descriptions to match your actual process. */
 export const process = {
-  eyebrow: "From Nature to You",
+  eyebrow: "Chapter 04 · From Nature to You",
   title: "A Careful Journey, Step by Step",
   steps: [
     { icon: "map", title: "Sourcing", text: "Partnering with trusted spirulina growers." },
@@ -160,4 +160,85 @@ export const journalSection = {
   eyebrow: "Wellness Journal",
   title: "Notes on Natural Living",
   cta: { label: "Visit the Journal", href: "/journal" },
+};
+
+/* ------------------------------------------------------------------
+   Added from the Matrutva brand board (logo meaning, philosophy,
+   capsule label) and from the reference-site review.
+------------------------------------------------------------------- */
+
+/** Brand philosophy and logo meaning, as written on the brand board. */
+export const philosophy = {
+  eyebrow: "Chapter 02 · The Symbol",
+  title: "Inspired by Nature, Guided by Tradition",
+  description:
+    "Inspired by nature, guided by tradition and designed for modern life. Matrutva Wellness brings you pure, natural nutrition for a healthier, more balanced tomorrow.",
+  values: [
+    { icon: "sprout", title: "Pure & Natural" },
+    { icon: "shield", title: "Protective & Caring" },
+    { icon: "flower", title: "Balanced Living" },
+    { icon: "sun", title: "Vitality & Energy" },
+    { icon: "heart", title: "For a Healthier Tomorrow" },
+  ] as { icon: BrandIconName; title: string }[],
+  logoTitle: "What Our Logo Means",
+  logoMeaning: [
+    { part: "feather", title: "Peacock Feather", text: "Purity, beauty, renewal and inner strength." },
+    { part: "leaf", title: "Inner Leaf", text: "Growth, vitality and natural wellness." },
+    { part: "curve", title: "Enclosing Curve", text: "Protection, care and a mother's embrace." },
+    { part: "dot", title: "Golden Dot", text: "Hope, energy and new beginnings." },
+    { part: "mark", title: "Overall Form", text: "Balance of nature, nutrition and life." },
+  ] as { part: "feather" | "leaf" | "curve" | "dot" | "mark"; title: string; text: string }[],
+};
+
+/**
+ * Spirulina Capsules label details, copied from the brand's label artwork.
+ * Check every value against the final printed pack before launch.
+ */
+export const capsuleLabel = {
+  eyebrow: "Chapter 05 · In Every Bottle",
+  title: "What's Inside, and How to Take It",
+  description: "A nutrient-rich superfood, naturally sourced to support your daily wellness and vitality.",
+  image: { src: "/images/products/spirulina-capsules-main.jpg", alt: "Matrutva Wellness Spirulina Capsules bottle with capsules" },
+  highlights: [
+    { value: "100%", label: "Spirulina" },
+    { value: "2", label: "Capsules a day" },
+    { value: "2 g", label: "Protein per serving" },
+    { value: "Plant", label: "Based" },
+  ],
+  usage: "Take 2 capsules daily with water, or as directed by a healthcare professional.",
+  ingredients: "Spirulina (100%)",
+  nutritionTitle: "Nutrition information, per serving (approx.)",
+  nutrition: [
+    { label: "Energy", value: "10 kcal" },
+    { label: "Protein", value: "2 g" },
+    { label: "Carbohydrate", value: "0.5 g" },
+    { label: "Fat", value: "0.2 g" },
+  ],
+  storage: "Store in a cool, dry place. Keep tightly closed.",
+  warnings: ["Not for medicinal use.", "Keep out of reach of children.", "Consult your doctor if pregnant or lactating."],
+  note: "Values from our label artwork. Always check the pack you receive for final details.",
+  cta: { label: "Shop Spirulina Capsules", href: "/shop/spirulina-capsules" },
+};
+
+/** Homepage FAQ. Answers only use facts from the label; add shipping and payment answers once final. */
+export const homeFaq = {
+  eyebrow: "Questions",
+  title: "Good to Know",
+  items: [
+    { q: "What is in Matrutva Spirulina Capsules?", a: "The label lists one ingredient: spirulina (100%)." },
+    { q: "How many capsules should I take?", a: "Take 2 capsules daily with water, or as directed by a healthcare professional." },
+    { q: "Is it a medicine?", a: "No. Spirulina is a food supplement and is not for medicinal use. It is not a substitute for a varied diet." },
+    { q: "Can I take it if I am pregnant or breastfeeding?", a: "Please consult your doctor first if you are pregnant or lactating, or if you take any medication." },
+    { q: "How should I store it?", a: "Store the bottle in a cool, dry place, tightly closed and out of reach of children." },
+  ],
+  cta: { label: "See all FAQs", href: "/faqs" },
+};
+
+export const finalCta = {
+  eyebrow: "Begin Your Ritual",
+  title: "Pure Nutrition. Natural Living. A Balanced Tomorrow.",
+  description: "Nature's goodness for a healthier tomorrow, with a mother's care in every bottle.",
+  primary: { label: "Shop Now", href: "/shop" },
+  secondary: { label: "Discover Spirulina", href: "/discover-spirulina" },
+  image: { src: "/images/brand/front-label.jpg", alt: "Front label of Matrutva Wellness Spirulina Capsules" },
 };

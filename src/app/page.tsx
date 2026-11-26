@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import {
+  BrandPhilosophy,
   DiscoverSpirulina,
+  FinalCta,
+  HomeFaq,
+  ProductSpotlight,
   FeaturedProducts,
   HeroSection,
   JournalPreview,
@@ -9,7 +13,6 @@ import {
   QualityTransparency,
   Testimonials,
   TrustBar,
-  WhyMatrutva,
 } from "@/components/home";
 import { NewsletterSection } from "@/components/sections/NewsletterSection";
 import { siteConfig } from "@/lib/site";
@@ -22,6 +25,11 @@ export const metadata: Metadata = {
 };
 
 /*
+ * Homepage, told as one product story: why we began, the symbol, the
+ * ingredient, the journey, the bottle, our promise, then the collection.
+ * WhyMatrutva is kept in components/home but left out because the brand
+ * philosophy section now covers the same ground.
+ *
  * Homepage. Sections 1 (announcement bar), 2 (header) and 14 (footer) come
  * from the root layout; everything in between is composed here.
  */
@@ -30,14 +38,17 @@ export default function HomePage() {
     <>
       <HeroSection />
       <TrustBar />
-      <FeaturedProducts />
-      <WhyMatrutva />
-      <DiscoverSpirulina />
       <OurStory />
-      <QualityTransparency />
+      <BrandPhilosophy />
+      <DiscoverSpirulina />
       <ProcessJourney />
+      <ProductSpotlight />
+      <QualityTransparency />
+      <FeaturedProducts />
       <Testimonials />
       <JournalPreview />
+      <HomeFaq />
+      <FinalCta />
       <NewsletterSection />
     </>
   );
