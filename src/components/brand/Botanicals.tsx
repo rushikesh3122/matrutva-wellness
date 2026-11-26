@@ -8,8 +8,8 @@ export function Leaf({ className, tone = "leaf" }: IllustrationProps & { tone?: 
   const uid = useId().replace(/:/g, "");
   const stops = {
     leaf: ["#5FA374", "#2E7D5B"],
-    teal: ["#1C8C8A", "#006B70"],
-    emerald: ["#1E6A4E", "#003D32"],
+    teal: ["#1C8C8A", "#0E687A"],
+    emerald: ["#1E6A4E", "#0F3D2E"],
     gold: ["#E2C48A", "#A8854A"],
   }[tone];
   return (

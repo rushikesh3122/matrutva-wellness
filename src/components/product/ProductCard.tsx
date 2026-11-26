@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { m } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Check, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types/product";
 import { cn, formatPrice } from "@/lib/utils";
@@ -22,7 +21,13 @@ type ProductCardProps = {
 };
 
 /** Product tile: image, quantity, name, short description, price, View Product and Add to Cart. */
-export function ProductCard({ product, onAddToCart, priority = false, index = 0, className }: ProductCardProps) {
+export function ProductCard({
+  product,
+  onAddToCart,
+  priority = false,
+  index = 0,
+  className,
+}: ProductCardProps) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const timer = useRef<number | undefined>(undefined);
@@ -30,7 +35,10 @@ export function ProductCard({ product, onAddToCart, priority = false, index = 0,
   const [primary, secondary] = product.images;
   const hasPrice = product.price !== null;
   const discount =
-    hasPrice && product.mrp && product.price !== null && product.mrp > product.price
+    hasPrice &&
+    product.mrp &&
+    product.price !== null &&
+    product.mrp > product.price
       ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
       : 0;
 
@@ -45,18 +53,20 @@ export function ProductCard({ product, onAddToCart, priority = false, index = 0,
   }
 
   return (
-    <m.article
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.8, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+    <article
+      style={{ "--reveal-delay": Math.min(index * 0.16, 1) } as CSSProperties}
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-card border border-gold/20 bg-white shadow-soft transition-shadow duration-500 hover:shadow-lift",
+        "reveal group relative flex h-full flex-col overflow-hidden rounded-card border border-gold/20 bg-white shadow-soft transition-shadow duration-500 hover:shadow-lift",
         className,
       )}
     >
       {/* Image */}
-      <Link href={href} tabIndex={-1} aria-hidden className="relative block aspect-[4/5] overflow-hidden bg-ivory-dark">
+      <Link
+        href={href}
+        tabIndex={-1}
+        aria-hidden
+        className="relative block aspect-[4/5] overflow-hidden bg-ivory-dark"
+      >
         {primary && (
           <Image
             src={primary.src}
@@ -100,7 +110,9 @@ export function ProductCard({ product, onAddToCart, priority = false, index = 0,
 
         {!product.inStock && (
           <span className="absolute inset-0 grid place-items-center bg-ivory/60 backdrop-blur-[2px]">
-            <span className="eyebrow rounded-full bg-forest px-4 py-2 text-ivory">Out of stock</span>
+            <span className="eyebrow rounded-full bg-forest px-4 py-2 text-ivory">
+              Out of stock
+            </span>
           </span>
         )}
       </Link>
@@ -113,14 +125,23 @@ export function ProductCard({ product, onAddToCart, priority = false, index = 0,
             {product.name}
           </Link>
         </h3>
-        <p className="text-caption text-forest/75">{product.shortDescription}</p>
+        <p className="text-caption text-forest/75">
+          {product.shortDescription}
+        </p>
 
         <div className="mt-auto flex items-baseline gap-2 pt-3">
-          <span className={cn("font-display text-emerald", hasPrice ? "text-2xl" : "text-base text-forest/80")}>
+          <span
+            className={cn(
+              "font-display text-emerald",
+              hasPrice ? "text-2xl" : "text-base text-forest/80",
+            )}
+          >
             {formatPrice(product.price)}
           </span>
           {discount > 0 && product.mrp && (
-            <span className="text-sm text-forest/60 line-through">{formatPrice(product.mrp)}</span>
+            <span className="text-sm text-forest/60 line-through">
+              {formatPrice(product.mrp)}
+            </span>
           )}
         </div>
 
@@ -145,6 +166,6 @@ export function ProductCard({ product, onAddToCart, priority = false, index = 0,
           {added ? `${product.name} added to cart` : ""}
         </span>
       </div>
-    </m.article>
+    </article>
   );
 }

@@ -1,24 +1,34 @@
-"use client";
+import type { ComponentPropsWithoutRef, CSSProperties } from "react";
+import { cn } from "@/lib/utils";
 
-import { m, type HTMLMotionProps } from "framer-motion";
-
-type RevealProps = HTMLMotionProps<"div"> & {
+type RevealProps = ComponentPropsWithoutRef<"div"> & {
+  /** Stagger, in seconds as before (0.1 = a little later). Mapped onto the scroll range. */
   delay?: number;
   /** Distance in px the element rises while fading in */
   y?: number;
 };
 
-/** Fades and lifts its children into view once, when scrolled into the viewport. */
-export function Reveal({ delay = 0, y = 24, children, ...props }: RevealProps) {
+/**
+ * Fades and lifts its children in as they scroll into view.
+ * Pure CSS (scroll-driven animation), so it ships no JavaScript and
+ * works in Server Components. See `.reveal` in globals.css.
+ */
+export function Reveal({
+  delay = 0,
+  y,
+  className,
+  style,
+  children,
+  ...props
+}: RevealProps) {
+  const vars = {
+    ...(delay ? { "--reveal-delay": Math.min(delay * 2, 1) } : {}),
+    ...(y !== undefined ? { "--reveal-y": `${y}px` } : {}),
+    ...style,
+  } as CSSProperties;
   return (
-    <m.div
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
-      {...props}
-    >
+    <div className={cn("reveal", className)} style={vars} {...props}>
       {children}
-    </m.div>
+    </div>
   );
 }

@@ -8,3 +8,7 @@ export { QualityTransparency } from "./QualityTransparency";
 export { ProcessJourney } from "./ProcessJourney";
 export { Testimonials } from "./Testimonials";
 export { JournalPreview } from "./JournalPreview";
+export { BrandPhilosophy } from "./BrandPhilosophy";
+export { ProductSpotlight } from "./ProductSpotlight";
+export { HomeFaq } from "./HomeFaq";
+export { FinalCta } from "./FinalCta";

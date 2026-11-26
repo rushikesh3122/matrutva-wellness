@@ -3,6 +3,8 @@ import {
   Factory,
   FileText,
   FlaskConical,
+  Flower2,
+  Heart,
   Leaf,
   MapPin,
   Package,
@@ -24,6 +26,8 @@ const icons = {
   sprout: Sprout,
   factory: Factory,
   package: Package,
+  heart: Heart,
+  flower: Flower2,
 } as const;
 
 export type BrandIconName = keyof typeof icons;

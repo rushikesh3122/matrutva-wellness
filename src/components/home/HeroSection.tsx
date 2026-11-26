@@ -21,14 +21,14 @@ export function HeroSection() {
         <div className="absolute right-0 -bottom-40 size-[30rem] rounded-full bg-gold/10 blur-3xl" />
       </div>
 
-      <Container className="relative grid items-center gap-12 pt-10 pb-20 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:gap-8 lg:pt-16 lg:pb-28">
+      <Container className="relative grid items-center gap-12 pt-10 pb-20 sm:pt-14 lg:grid-cols-[1.12fr_1fr] lg:gap-8 lg:pt-16 lg:pb-28">
         {/* Copy */}
         <div className="relative z-10 flex flex-col items-center text-center lg:items-start lg:text-left">
           <p className="eyebrow animate-fade-up flex items-center gap-3 text-teal">
             <span aria-hidden className="h-px w-8 bg-gold" />
             {hero.eyebrow}
           </p>
-          <h1 className="mt-5 font-display text-[clamp(2.5rem,1.5rem+3.4vw,4.6rem)] leading-[1.05] font-medium text-balance text-emerald">
+          <h1 className="mt-5 font-display text-[clamp(2.5rem,1.5rem+3.4vw,4.2rem)] leading-[1.05] font-medium text-balance text-emerald">
             <span className="block">{hero.title[0]}</span>
             <span className="mt-1 block font-serif text-[0.92em] font-normal text-teal italic">{hero.title[1]}</span>
           </h1>
@@ -65,7 +65,7 @@ export function HeroSection() {
             <div className="absolute inset-0 overflow-hidden rounded-full bg-sage">
               <div className="absolute inset-x-0 bottom-0 h-[46%] bg-teal" />
               <svg viewBox="0 0 400 60" preserveAspectRatio="none" className="absolute inset-x-0 bottom-[44%] h-10 w-full">
-                <path d="M0 40C80 0 160 60 240 30C300 8 360 20 400 10V60H0Z" fill="#006B70" />
+                <path d="M0 40C80 0 160 60 240 30C300 8 360 20 400 10V60H0Z" fill="#0E687A" />
                 <path d="M0 42C80 2 160 62 240 32C300 10 360 22 400 12" stroke="#C9A66A" strokeWidth="2" fill="none" />
               </svg>
             </div>

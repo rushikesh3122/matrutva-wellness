@@ -1,6 +1,9 @@
 "use client";
 
-import { LazyMotion, MotionConfig, domAnimation } from "framer-motion";
+import { LazyMotion, MotionConfig } from "framer-motion";
+
+// Animation features download after the page is interactive, not in the first bundle.
+const loadFeatures = () => import("@/lib/motion-features").then((mod) => mod.default);
 import type { ReactNode } from "react";
 
 /**
@@ -10,7 +13,7 @@ import type { ReactNode } from "react";
  */
 export function MotionProvider({ children }: { children: ReactNode }) {
   return (
-    <LazyMotion features={domAnimation} strict>
+    <LazyMotion features={loadFeatures} strict>
       <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </LazyMotion>
   );

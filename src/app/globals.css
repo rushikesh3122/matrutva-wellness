@@ -7,8 +7,8 @@
 ---------------------------------------------------------------- */
 @theme {
   /* Brand colours */
-  --color-emerald: #003d32; /* Emerald Green — primary */
-  --color-teal: #006b70; /* Peacock Teal — secondary */
+  --color-emerald: #0F3D2E; /* Deep Green — primary (brand board) */
+  --color-teal: #0E687A; /* Peacock Teal — secondary */
   --color-gold: #c9a66a; /* Muted Gold — accent */
   --color-ivory: #f6f0e4; /* Warm Ivory — background */
   --color-forest: #173b32; /* Dark Forest — body text */
@@ -16,9 +16,9 @@
   --color-white: #ffffff;
 
   /* Supporting tints & shades */
-  --color-emerald-light: #0e5a47;
-  --color-emerald-dark: #002a22;
-  --color-teal-light: #0e8a8a;
+  --color-emerald-light: #1D5A43;
+  --color-emerald-dark: #082A1F;
+  --color-teal-light: #1b8496;
   --color-gold-light: #e2c48a;
   --color-gold-dark: #a8854a;
   /* Gold for small text on light backgrounds (meets WCAG AA 4.5:1 on ivory/white/sage).
@@ -26,7 +26,7 @@
   --color-gold-deep: #7d5f28;
   --color-ivory-dark: #ebe2cf;
   --color-ivory-light: #fbf8f1;
-  --color-leaf: #2e7d5b;
+  --color-leaf: #2e7d5b; /* Emerald — brand board accent green */
   --color-peacock-blue: #1b2a6b;
 
   /* Typography (variables injected by next/font in layout.tsx) */
@@ -72,8 +72,8 @@
   --tracking-luxe: 0.35em;
 
   /* Shadows & easing */
-  --shadow-soft: 0 10px 40px -12px rgb(0 61 50 / 0.18);
-  --shadow-lift: 0 24px 60px -20px rgb(0 61 50 / 0.35);
+  --shadow-soft: 0 10px 40px -12px rgb(15 61 46 / 0.18);
+  --shadow-lift: 0 24px 60px -20px rgb(15 61 46 / 0.35);
   --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
 
   --animate-shimmer: shimmer 2.4s linear infinite;
@@ -205,5 +205,43 @@
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveal, in CSS only (no JavaScript, so no blocking time).
+   Uses scroll-driven animations where supported; other browsers
+   simply show the content. --reveal-delay staggers items (0–1).
+---------------------------------------------------------------- */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 var(--reveal-y, 24px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes reveal-line {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal,
+    .reveal-line {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--reveal-delay, 0) * 25%) entry calc(55% + var(--reveal-delay, 0) * 25%);
+    }
+    .reveal-line {
+      animation-name: reveal-line;
+      animation-range: entry 20% cover 45%;
+    }
   }
 }

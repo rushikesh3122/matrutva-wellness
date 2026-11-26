@@ -1,7 +1,4 @@
-"use client";
-
-import { m } from "framer-motion";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { LogoMark } from "@/components/brand/LogoMark";
 
@@ -20,12 +17,7 @@ type SectionHeadingProps = {
   className?: string;
 };
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0 },
-};
-
-/** Section title block with eyebrow, gold ornament and optional Marathi line. Animates in on scroll. */
+/** Section title block with eyebrow, gold ornament and optional Marathi line. Animates in on scroll with CSS only. */
 export function SectionHeading({
   eyebrow,
   title,
@@ -38,31 +30,49 @@ export function SectionHeading({
   className,
 }: SectionHeadingProps) {
   const centered = align === "center";
+  // The page h1 is usually the LCP element: render it without animation.
+  const reveal = Tag === "h1" ? undefined : "reveal";
+  const stagger = (n: number) =>
+    reveal ? ({ "--reveal-delay": n * 0.12 } as CSSProperties) : undefined;
   const dark = tone === "dark";
 
   return (
-    <m.div
-      // h1 is usually the largest element on screen: show it instantly for a fast LCP
-      initial={Tag === "h1" ? false : "hidden"}
-      whileInView="show"
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ staggerChildren: 0.12 }}
-      className={cn("flex max-w-3xl flex-col gap-4", centered ? "mx-auto items-center text-center" : "items-start text-left", className)}
+    <div
+      className={cn(
+        "flex max-w-3xl flex-col gap-4",
+        centered ? "mx-auto items-center text-center" : "items-start text-left",
+        className,
+      )}
     >
       {(eyebrow || ornament) && (
-        <m.div
-          variants={fadeUp}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="flex items-center gap-3"
-        >
-          {ornament && <span aria-hidden className={cn("h-px w-10 bg-gradient-to-r from-transparent to-gold", !centered && "hidden")} />}
+        <div className={cn("flex items-center gap-3", reveal)}>
+          {ornament && (
+            <span
+              aria-hidden
+              className={cn(
+                "h-px w-10 bg-gradient-to-r from-transparent to-gold",
+                !centered && "hidden",
+              )}
+            />
+          )}
           {ornament && <LogoMark variant="gold" className="w-5" title="" />}
-          {eyebrow && <span className={cn("eyebrow", dark ? "text-teal" : "text-gold-light")}>{eyebrow}</span>}
-          {ornament && <span aria-hidden className="h-px w-10 bg-gradient-to-l from-transparent to-gold" />}
-        </m.div>
+          {eyebrow && (
+            <span
+              className={cn("eyebrow", dark ? "text-teal" : "text-gold-light")}
+            >
+              {eyebrow}
+            </span>
+          )}
+          {ornament && (
+            <span
+              aria-hidden
+              className="h-px w-10 bg-gradient-to-l from-transparent to-gold"
+            />
+          )}
+        </div>
       )}
 
-      <m.div variants={fadeUp} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+      <div className={reveal} style={stagger(1)}>
         <Tag
           className={cn(
             "font-display text-3xl leading-tight font-medium text-balance sm:text-4xl lg:text-5xl",
@@ -71,28 +81,34 @@ export function SectionHeading({
         >
           {title}
         </Tag>
-      </m.div>
+      </div>
 
       {marathi && (
-        <m.p
-          variants={fadeUp}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        <p
           lang="mr"
-          className={cn("font-devanagari text-lg sm:text-xl", dark ? "text-gold-deep" : "text-gold")}
+          style={stagger(2)}
+          className={cn(
+            reveal,
+            "font-devanagari text-lg sm:text-xl",
+            dark ? "text-gold-deep" : "text-gold",
+          )}
         >
           {marathi}
-        </m.p>
+        </p>
       )}
 
       {description && (
-        <m.p
-          variants={fadeUp}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className={cn("text-base leading-relaxed text-pretty sm:text-lg", dark ? "text-forest/75" : "text-ivory/80")}
+        <p
+          style={stagger(3)}
+          className={cn(
+            reveal,
+            "text-base leading-relaxed text-pretty sm:text-lg",
+            dark ? "text-forest/75" : "text-ivory/80",
+          )}
         >
           {description}
-        </m.p>
+        </p>
       )}
-    </m.div>
+    </div>
   );
 }
