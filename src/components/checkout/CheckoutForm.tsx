@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatPrice, cn } from "@/lib/utils";
-import { indianStates, LAST_ORDER_KEY, newOrderNumber, type CheckoutDetails, type PlacedOrder } from "@/lib/order";
+import { indianStates, LAST_ORDER_KEY, newOrderNumber, saveOrder, type CheckoutDetails, type PlacedOrder } from "@/lib/order";
 import { OrderSummary } from "./OrderSummary";
 
 const DETAILS_KEY = "matrutva-checkout-details";
@@ -83,6 +83,7 @@ export function CheckoutForm() {
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   // Remember details on this device so a returning customer doesn't retype them.
   useEffect(() => {
@@ -115,7 +116,7 @@ export function CheckoutForm() {
     className: input,
   });
 
-  function onSubmit(ev: FormEvent) {
+  async function onSubmit(ev: FormEvent) {
     ev.preventDefault();
     const found = validate(d, terms);
     setErrors(found);
@@ -125,8 +126,22 @@ export function CheckoutForm() {
       return;
     }
     setSubmitting(true);
-    const details = { ...d, gstin: d.gstin.toUpperCase(), phone: d.phone.replace(/\s/g, "") };
-    const order: PlacedOrder = { number: newOrderNumber(), createdAt: new Date().toISOString(), items, details };
+    setServerError("");
+    const details = { ...d, gstin: d.gstin.toUpperCase(), phone: d.phone.replace(/\D/g, "").replace(/^91(?=\d{10}$)/, "") };
+    const saved = await saveOrder(items, details);
+    if (saved && "error" in saved) {
+      setServerError(saved.error);
+      setSubmitting(false);
+      return;
+    }
+    const order: PlacedOrder = {
+      number: saved?.number ?? newOrderNumber(),
+      createdAt: new Date().toISOString(),
+      items,
+      details,
+      saved: Boolean(saved),
+      total: saved?.total,
+    };
     try {
       window.localStorage.setItem(DETAILS_KEY, JSON.stringify({ ...details, notes: "" }));
       window.localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
@@ -229,12 +244,17 @@ export function CheckoutForm() {
             </p>
           )}
         </div>
+        {serverError && (
+          <p role="alert" className="mt-4 rounded-xl bg-terracotta/10 px-4 py-3 text-sm text-terracotta-deep">
+            {serverError}
+          </p>
+        )}
         <button
           type="submit"
           disabled={submitting}
           className="mt-5 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-teal-deep px-6 font-medium text-ivory transition-colors hover:bg-emerald disabled:opacity-60"
         >
-          Place order · {formatPrice(subtotal)}
+          {submitting ? "Placing order…" : <>Place order · {formatPrice(subtotal)}</>}
           <ArrowRight className="size-4" aria-hidden />
         </button>
         <p className="mt-3 text-center text-xs text-forest/70">Next: send your order to us. We confirm shipping and payment with you.</p>

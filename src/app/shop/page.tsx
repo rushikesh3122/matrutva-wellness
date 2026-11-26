@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { products } from "@/data/products";
+import { getLiveProducts } from "@/lib/live-products";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { ProductStory, OrderCta } from "@/components/home";
 
@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/shop" },
 };
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const products = await getLiveProducts();
   return (
     <>
       <PageIntro

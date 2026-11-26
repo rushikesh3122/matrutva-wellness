@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, products } from "@/data/products";
+import { getLiveProduct } from "@/lib/live-products";
 import { siteConfig } from "@/lib/site";
 import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { formatPrice } from "@/lib/utils";
@@ -43,7 +44,7 @@ export default function Page({ params }: PageProps<"/shop/[slug]">) {
 
 async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "params">) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getLiveProduct(slug);
   if (!product) notFound();
   const price = product.price ? formatPrice(product.price) : null;
 
@@ -112,9 +113,21 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
 
             <div className="mt-8 flex items-baseline gap-4">
               <span className="font-display text-4xl text-emerald">{price ?? "Price coming soon"}</span>
+              {product.mrp && product.price && product.mrp > product.price && (
+                <>
+                  <span className="text-lg text-forest/60 line-through">
+                    <span className="sr-only">MRP </span>
+                    {formatPrice(product.mrp)}
+                  </span>
+                  <span className="rounded-full bg-gold/25 px-2.5 py-0.5 text-xs font-medium text-gold-deep">
+                    Save {Math.round((1 - product.price / product.mrp) * 100)}%
+                  </span>
+                </>
+              )}
               <span className="eyebrow text-[0.62rem] text-forest/65">{product.quantity}</span>
             </div>
             {price && <p className="mt-1 text-sm text-forest/65">Inclusive of all taxes</p>}
+            {!product.inStock && <p className="mt-3 font-medium text-terracotta-deep">Currently out of stock. Contact us to be told when it is back.</p>}
 
             {product.facts && (
               <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-6 border-y border-forest/10 py-6">
