@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Cormorant_Garamond, Jost, Tiro_Devanagari_Marathi } from "next/font/google";
+import localFont from "next/font/local";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -10,29 +10,45 @@ import { organizationJsonLd, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 /*
- * Fonts are self-hosted at build time by next/font: no request to Google
- * from the visitor's browser, no layout shift. Cinzel, Cormorant and Jost are
- * variable fonts: one small file per family covers every weight.
+ * Fonts are bundled in src/fonts (no internet needed for `npm run dev` or `npm run build`).
+ * next/font optimises them: preloading, size-matched fallbacks (no layout shift), long caching.
+ * Cinzel, Jost and Cormorant are variable fonts: one small file covers every weight.
  */
 /** Headings + wordmark: flared classical capitals matching MATRUTVA */
-const cinzel = Cinzel({ variable: "--font-cinzel", subsets: ["latin"], display: "swap" });
+const cinzel = localFont({
+  src: "../fonts/cinzel-latin-var.woff2",
+  variable: "--font-cinzel",
+  weight: "400 900",
+  display: "swap",
+  fallback: ["Georgia", "serif"],
+});
 /** Editorial serif for quotes and italic accents */
-const cormorant = Cormorant_Garamond({
+const cormorant = localFont({
+  src: [
+    { path: "../fonts/cormorant-garamond-latin-var.woff2", weight: "300 700", style: "normal" },
+    { path: "../fonts/cormorant-garamond-italic-latin-var.woff2", weight: "300 700", style: "italic" },
+  ],
   variable: "--font-cormorant",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
   display: "swap",
   preload: false,
+  fallback: ["Georgia", "serif"],
 });
 /** Body text and spaced labels ("W E L L N E S S") */
-const jost = Jost({ variable: "--font-jost", subsets: ["latin"], display: "swap" });
+const jost = localFont({
+  src: "../fonts/jost-latin-var.woff2",
+  variable: "--font-jost",
+  weight: "100 900",
+  display: "swap",
+  fallback: ["system-ui", "Arial", "sans-serif"],
+});
 /** Marathi tagline */
-const tiro = Tiro_Devanagari_Marathi({
+const tiro = localFont({
+  src: "../fonts/tiro-devanagari-marathi-devanagari.woff2",
   variable: "--font-tiro",
-  subsets: ["devanagari"],
   weight: "400",
   display: "swap",
   preload: false,
+  fallback: ["Noto Serif Devanagari", "serif"],
 });
 
 const defaultTitle = `${siteConfig.name} | Premium Indian Spirulina`;
