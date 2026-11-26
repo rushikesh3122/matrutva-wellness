@@ -63,5 +63,5 @@ export const ritual = {
 export const orderCta = {
   title: "Naturally yours.",
   description: "Tell us what you're reaching for. We'll help you choose and order right in chat.",
-  cta: "Order on WhatsApp",
+  cta: "Shop spirulina",
 };

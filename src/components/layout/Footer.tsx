@@ -39,11 +39,17 @@ export function Footer() {
             Pure spirulina, grown with care and packed without fillers. Nourishment with a mother&apos;s care.
           </p>
           <Link
-            href={orderHref()}
+            href={siteConfig.whatsappNumber ? orderHref() : "/shop/spirulina-capsules"}
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-medium text-emerald transition-colors hover:bg-gold-light"
           >
-            <WhatsAppIcon className="size-4" />
-            Order on WhatsApp
+            {siteConfig.whatsappNumber ? (
+              <>
+                <WhatsAppIcon className="size-4" />
+                Order on WhatsApp
+              </>
+            ) : (
+              "Shop now"
+            )}
           </Link>
           {socials.length > 0 && (
             <ul className="mt-7 flex gap-3" aria-label="Follow us">

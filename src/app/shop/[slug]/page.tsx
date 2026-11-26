@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, products } from "@/data/products";
-import { orderHref, siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site";
+import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { formatPrice } from "@/lib/utils";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCart } from "@/components/product/AddToCart";
@@ -10,7 +11,6 @@ import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { LabelDetails } from "@/components/product/LabelDetails";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { FaqList } from "@/components/ui/FaqList";
-import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { PromiseSection, RitualSection } from "@/components/home";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteUrl } from "@/lib/seo";
@@ -118,16 +118,15 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
             )}
 
             <div id="buy-box" className="mt-10 flex flex-col gap-4">
-              <Link
-                href={orderHref(`Hi Matrutva Wellness, I'd like to order ${product.name}${price ? ` (${price})` : ""}.`)}
-                className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald sm:w-auto sm:self-start"
+              <BuyNowButton
+                product={product}
+                className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald disabled:opacity-50 sm:w-auto sm:self-start"
               >
-                <WhatsAppIcon className="size-5" />
-                {price ? `Buy on WhatsApp · ${price}` : "Order on WhatsApp"}
-              </Link>
+                {price ? `Buy now · ${price}` : "Buy now"}
+              </BuyNowButton>
               <AddToCart product={product} />
             </div>
-            <p className="mt-6 text-sm text-forest/65">Online payment is not available yet. We confirm every order with you on WhatsApp.</p>
+            <p className="mt-6 text-sm text-forest/65">Online payment is not available yet. We confirm every order, shipping and payment with you personally.</p>
           </div>
         </div>
       </section>

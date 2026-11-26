@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { orderCta } from "@/content/home";
-import { orderHref } from "@/lib/site";
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 
 /** "Naturally yours." Closing order prompt on teal. */
 export function OrderCta() {
@@ -14,10 +12,9 @@ export function OrderCta() {
         </h2>
         <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-ivory/85">{orderCta.description}</p>
         <Link
-          href={orderHref()}
+          href="/shop/spirulina-capsules"
           className="mt-10 inline-flex h-14 items-center gap-3 rounded-full bg-ivory px-8 font-medium text-emerald transition-colors hover:bg-white"
         >
-          <WhatsAppIcon className="size-5" />
           {orderCta.cta}
         </Link>
       </Reveal>

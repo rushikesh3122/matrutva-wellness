@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { hero } from "@/content/home";
-import { orderHref } from "@/lib/site";
+import { orderHref, siteConfig } from "@/lib/site";
 
 /** Hero from the Figma design: mono eyebrow, Kalnia headline with a teal last line, the white bottle on the right. */
 export function HeroSection() {
@@ -31,7 +31,7 @@ export function HeroSection() {
               {hero.primaryCta.label} <span aria-hidden>→</span>
             </Link>
             <Link href={ask} className="eyebrow text-[0.7rem] text-forest/70 transition-colors hover:text-teal-deep">
-              {hero.secondaryCta.label}
+              {siteConfig.whatsappNumber ? hero.secondaryCta.label : "Ask a question"}
             </Link>
           </div>
         </div>

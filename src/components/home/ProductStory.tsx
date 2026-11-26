@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/types/product";
-import { orderHref } from "@/lib/site";
+import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { cn, formatPrice } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 
 /** One product, told in a single row: photo, name, a line of copy, three facts and a buy button. */
 export function ProductStory({
@@ -49,13 +48,12 @@ export function ProductStory({
           )}
 
           <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Link
-              href={orderHref(`Hi Matrutva Wellness, I'd like to order ${product.name}${price ? ` (${price})` : ""}.`)}
-              className="inline-flex items-center gap-3 rounded-full bg-teal-deep px-7 py-3.5 font-medium text-ivory transition-colors hover:bg-emerald"
+            <BuyNowButton
+              product={product}
+              className="inline-flex items-center gap-3 rounded-full bg-teal-deep px-7 py-3.5 font-medium text-ivory transition-colors hover:bg-emerald disabled:opacity-50"
             >
-              <WhatsAppIcon className="size-5" />
-              {price ? `Buy · ${price}` : "Order"}
-            </Link>
+              {price ? `Buy now · ${price}` : "Buy now"}
+            </BuyNowButton>
             <Link href={`/shop/${product.slug}`} className="eyebrow text-[0.66rem] text-forest/70 underline-offset-4 hover:text-teal-deep hover:underline">
               View details
             </Link>
