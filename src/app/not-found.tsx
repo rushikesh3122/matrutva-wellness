@@ -1,23 +1,8 @@
 import type { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
-import { SecondaryButton } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 
-export const metadata: Metadata = { title: "Coming soon", robots: { index: false } };
+export const metadata: Metadata = { title: "Page not found", robots: { index: false } };
 
 export default function NotFound() {
-  return (
-    <Container className="section-y flex flex-col items-center gap-8 text-center">
-      <SectionHeading
-        as="h1"
-        eyebrow="Coming soon"
-        title="This page is still growing"
-        description="We are crafting this part of the Matrutva experience. Please check back soon."
-      />
-      <SecondaryButton href="/" leftIcon={<ArrowLeft />}>
-        Back to home
-      </SecondaryButton>
-    </Container>
-  );
+  return <PagePlaceholder eyebrow="404" title="This page wandered off." description="The page you are looking for does not exist or has moved." />;
 }

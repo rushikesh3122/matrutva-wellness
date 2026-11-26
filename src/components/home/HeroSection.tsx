@@ -3,7 +3,7 @@ import Link from "next/link";
 import { hero } from "@/content/home";
 import { orderHref } from "@/lib/site";
 
-/** Hero from the Figma design: mono eyebrow, Kalnia headline with a teal last line, bottle on the right. */
+/** Hero from the Figma design: mono eyebrow, Kalnia headline with a teal last line, the white bottle on the right. */
 export function HeroSection() {
   const ask = orderHref("Hi Matrutva Wellness, I have a question about your products.");
   return (
@@ -35,16 +35,15 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className="relative mx-auto w-full max-w-[22rem] sm:max-w-md md:max-w-[28rem]">
+        <div className="relative mx-auto aspect-[4/5] w-full max-w-[22rem] overflow-hidden rounded-figure bg-ivory-dark sm:max-w-md md:max-w-[28rem]">
           <Image
             src={hero.image.src}
             alt={hero.image.alt}
-            width={hero.image.width}
-            height={hero.image.height}
+            fill
             priority
             fetchPriority="high"
             sizes="(min-width: 768px) 448px, 90vw"
-            className="h-auto w-full"
+            className="object-cover"
           />
         </div>
       </div>

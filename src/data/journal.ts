@@ -17,7 +17,7 @@ export const journalPosts: JournalPost[] = [
     excerpt: "From morning smoothies to capsules with breakfast, easy ideas for building a consistent routine.",
     category: "Rituals",
     readingTime: "4 min read",
-    image: { src: "/images/brand/bottle-cap-top.jpg", alt: "Matrutva Wellness bottle cap embossed with the peacock emblem" },
+    image: { src: "/images/products/white-bottle-cap.jpg", alt: "Matrutva Wellness bottle cap embossed with the peacock emblem" },
     date: "2026-11-08",
   },
   {
@@ -26,7 +26,7 @@ export const journalPosts: JournalPost[] = [
     excerpt: "What to look for in ingredients, serving sizes and batch details, so you can choose with confidence.",
     category: "Transparency",
     readingTime: "6 min read",
-    image: { src: "/images/brand/shipping-box-wide.jpg", alt: "Matrutva Wellness emerald packaging with a peacock feather design" },
+    image: { src: "/images/products/white-bottle-front.jpg", alt: "Front label of the Matrutva Wellness Spirulina Capsules bottle" },
     date: "2026-11-15",
   },
 ];

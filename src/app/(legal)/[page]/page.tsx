@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
+import { PageIntro } from "@/components/ui/PageIntro";
+import { FaqList } from "@/components/ui/FaqList";
+import { products } from "@/data/products";
 
 /** Support and policy pages linked from the footer. Replace each with final content. */
 const pages: Record<string, { title: string; description: string }> = {
@@ -26,5 +29,18 @@ export default async function LegalPage({ params }: PageProps<"/[page]">) {
   const { page } = await params;
   const p = pages[page];
   if (!p) notFound();
+  if (page === "faqs") {
+    const items = products.flatMap((product) => product.faq ?? []);
+    return (
+      <>
+        <PageIntro eyebrow="Customer Care" title="Good to know." description={p.description} />
+        <section className="border-t border-forest/10 bg-ivory">
+          <div className="container-luxe max-w-3xl py-16 md:py-24">
+            <FaqList items={items} />
+          </div>
+        </section>
+      </>
+    );
+  }
   return <PagePlaceholder eyebrow="Customer Care" title={p.title} description={`${p.description} This page is being finalised.`} />;
 }

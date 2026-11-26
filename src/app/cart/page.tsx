@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { CartSummary } from "@/components/cart/CartSummary";
-import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PageIntro } from "@/components/ui/PageIntro";
 
 export const metadata: Metadata = { title: "Your Cart", robots: { index: false } };
 
 export default function CartPage() {
   return (
-    <Container size="narrow" className="section-y">
-      <SectionHeading as="h1" eyebrow="Your Cart" title="Your Selection" />
-      <CartSummary />
-    </Container>
+    <>
+      <PageIntro eyebrow="Your cart" title="Your selection." className="pb-0" />
+      <section className="bg-ivory">
+        <div className="container-luxe max-w-3xl pb-24">
+          <CartSummary />
+        </div>
+      </section>
+    </>
   );
 }

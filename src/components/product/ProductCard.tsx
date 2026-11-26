@@ -119,7 +119,7 @@ export function ProductCard({
 
       {/* Details */}
       <div className="flex flex-1 flex-col gap-2 p-5 sm:p-6">
-        <p className="eyebrow text-teal">{product.quantity}</p>
+        <p className="eyebrow text-teal-deep">{product.quantity}</p>
         <h3 className="font-display text-h4 text-emerald">
           <Link href={href} className="transition-colors hover:text-teal">
             {product.name}

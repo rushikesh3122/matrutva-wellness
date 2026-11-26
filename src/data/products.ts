@@ -3,71 +3,58 @@ import type { Product } from "@/types/product";
 /**
  * Central product catalogue — every page and component reads from here.
  *
- * Prices are intentionally `null` until confirmed (cards show "Price coming soon").
- * Entries with `isDemo: true` are placeholders: replace their details and images
- * with real product information before launch.
+ * Matrutva currently sells one product: Spirulina Capsules.
+ * Add new products here when they launch; the shop, product pages and sitemap update automatically.
  */
 export const products: Product[] = [
   {
     id: "spirulina-capsules",
     slug: "spirulina-capsules",
     name: "Spirulina Capsules",
+    eyebrow: "Rise · Spirulina",
+    headline: "Living blue-green. Nothing else.",
     shortDescription: "Pure spirulina in easy, everyday capsules.",
-    description:
-      "Spirulina in convenient capsules for a simple daily routine. See the product label for ingredients, serving size and directions.",
-    quantity: "60 capsules",
-    price: null,
+    description: "Cold-compressed microalgae, pressed without heat so the phycocyanin stays alive.",
+    quantity: "60 / 120 capsules",
+    // Price from the Figma design. Confirm before launch.
+    price: 649,
     images: [
-      { src: "/images/products/spirulina-capsules-main.jpg", alt: "Matrutva Wellness Spirulina Capsules bottle on natural stone with a peacock feather" },
-      { src: "/images/brand/front-label.jpg", alt: "Front label of Matrutva Wellness Spirulina Capsules" },
+      { src: "/images/products/white-bottle-hero.jpg", alt: "Matrutva Wellness Spirulina Capsules white bottle with green label beside natural stone" },
+      { src: "/images/products/white-bottle-front.jpg", alt: "Front label of the Matrutva Wellness Spirulina Capsules bottle" },
+      { src: "/images/products/white-bottle-lifestyle.jpg", alt: "Matrutva Wellness Spirulina Capsules bottle lying on stone with green leaves and capsules" },
+      { src: "/images/products/white-bottle-cap.jpg", alt: "Green bottle cap embossed with the Matrutva peacock emblem" },
     ],
     badge: "Our signature",
     tags: ["Plant based"],
     inStock: true,
     featured: true,
-  },
-  {
-    id: "spirulina-tablets",
-    slug: "spirulina-tablets",
-    name: "Spirulina Tablets",
-    shortDescription: "Compressed spirulina tablets for nutrition on the go.",
-    description: "Demo product. Replace with the final tablet details and photography.",
-    quantity: "Pack size to be confirmed",
-    price: null,
-    images: [{ src: "/images/products/demo-spirulina-tablets.jpg", alt: "Illustration of Matrutva Wellness Spirulina Tablets (demo image)" }],
-    isDemo: true,
-    tags: ["Plant based"],
-    inStock: true,
-    featured: true,
-  },
-  {
-    id: "spirulina-powder",
-    slug: "spirulina-powder",
-    name: "Spirulina Powder",
-    shortDescription: "Versatile powder to stir into smoothies, juices and bowls.",
-    description: "Demo product. Replace with the final powder details and photography.",
-    quantity: "Pack size to be confirmed",
-    price: null,
-    images: [{ src: "/images/products/demo-spirulina-powder.jpg", alt: "Illustration of Matrutva Wellness Spirulina Powder pouch (demo image)" }],
-    isDemo: true,
-    tags: ["Plant based"],
-    inStock: true,
-    featured: true,
-  },
-  {
-    id: "wellness-combo",
-    slug: "wellness-combo",
-    name: "Wellness Combo",
-    shortDescription: "Capsules and powder together for a complete daily ritual.",
-    description: "Demo product. Replace with the final combo contents and photography.",
-    quantity: "Combo contents to be confirmed",
-    price: null,
-    images: [{ src: "/images/products/demo-spirulina-combo.jpg", alt: "Illustration of the Matrutva Wellness combo pack (demo image)" }],
-    isDemo: true,
-    badge: "Combo",
-    tags: ["Gift ready"],
-    inStock: true,
-    featured: true,
+    // Claims from the Figma design. Confirm each one is documented before launch.
+    facts: [
+      { value: "100%", label: "Organic" },
+      { value: "60%", label: "Plant protein" },
+      { value: "0", label: "Fillers" },
+    ],
+    // From the printed label artwork. Check against the final pack.
+    label: {
+      usage: "Take 2 capsules daily with water, or as directed by a healthcare professional.",
+      ingredients: "Spirulina (100%)",
+      nutritionTitle: "Nutrition information, per serving (approx.)",
+      nutrition: [
+        { label: "Energy", value: "10 kcal" },
+        { label: "Protein", value: "2 g" },
+        { label: "Carbohydrate", value: "0.5 g" },
+        { label: "Fat", value: "0.2 g" },
+      ],
+      storage: "Store in a cool, dry place. Keep tightly closed.",
+      warnings: ["Not for medicinal use.", "Keep out of reach of children.", "Consult your doctor if pregnant or lactating."],
+    },
+    faq: [
+      { q: "What is in the capsules?", a: "One ingredient: spirulina (100%), in a capsule." },
+      { q: "How many should I take?", a: "Take 2 capsules daily with water, or as directed by a healthcare professional." },
+      { q: "Is it a medicine?", a: "No. Spirulina is a food supplement and is not for medicinal use. It is not a substitute for a varied diet." },
+      { q: "Can I take it if I am pregnant or breastfeeding?", a: "Please consult your doctor first if you are pregnant or lactating, or if you take any medication." },
+      { q: "How should I store it?", a: "In a cool, dry place, tightly closed and out of reach of children." },
+    ],
   },
 ];
 

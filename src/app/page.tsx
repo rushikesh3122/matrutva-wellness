@@ -1,28 +1,38 @@
 import type { Metadata } from "next";
-import { HeroSection, OrderCta, ProductStory, PromiseSection, RitualSection, StatsStrip } from "@/components/home";
-import { products } from "@/content/home";
+import {
+  FaqSection,
+  HeroSection,
+  InsideSection,
+  OrderCta,
+  ProductStory,
+  PromiseSection,
+  RitualSection,
+  StatsStrip,
+} from "@/components/home";
+import { products } from "@/data/products";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: `${siteConfig.name} | Pure Plant Superfoods, Nothing Else` },
+  title: { absolute: `${siteConfig.name} | Pure Spirulina Capsules, Nothing Else` },
   description:
-    "Spirulina, moringa, turmeric and fruit & veg capsules from Matrutva Wellness. Pure plant energy with no fillers. Nourishment with a mother's care.",
+    "Matrutva Wellness Spirulina Capsules: 100% spirulina, no fillers, two capsules a day. Nourishment with a mother's care.",
   alternates: { canonical: "/" },
 };
 
-/** Homepage, following the Figma design "Matrutva Brand Website". Header and footer come from the root layout. */
+/** Homepage in the Figma style, focused on our one product: Spirulina Capsules. */
 export default function HomePage() {
+  const spirulina = products[0];
   return (
     <>
       <HeroSection />
       <StatsStrip />
       <div id="products" className="scroll-mt-20">
-        {products.map((product) => (
-          <ProductStory key={product.id} product={product} />
-        ))}
+        <ProductStory product={spirulina} />
       </div>
+      <InsideSection product={spirulina} />
       <PromiseSection />
       <RitualSection />
+      {spirulina.faq && <FaqSection items={spirulina.faq} />}
       <OrderCta />
     </>
   );

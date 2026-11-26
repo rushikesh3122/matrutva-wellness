@@ -26,6 +26,22 @@ export type Product = {
   tags?: string[];
   inStock: boolean;
   featured?: boolean;
+  /** Short eyebrow line, e.g. "Rise · Spirulina" */
+  eyebrow?: string;
+  /** Headline used on the homepage and product page */
+  headline?: string;
+  /** Three headline figures shown under the description */
+  facts?: { value: string; label: string }[];
+  /** Label details, copied from the printed pack */
+  label?: {
+    usage: string;
+    ingredients: string;
+    nutritionTitle: string;
+    nutrition: { label: string; value: string }[];
+    storage: string;
+    warnings: string[];
+  };
+  faq?: { q: string; a: string }[];
 };
 
 export type JournalPost = {

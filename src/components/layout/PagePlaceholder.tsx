@@ -1,10 +1,5 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { siteConfig } from "@/lib/site";
-import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PrimaryButton, SecondaryButton } from "@/components/ui/Button";
-import { FeatherWave } from "@/components/brand/FeatherWave";
-import { LeafSprig } from "@/components/brand/Botanicals";
+import Link from "next/link";
+import { PageIntro } from "@/components/ui/PageIntro";
 
 type PagePlaceholderProps = {
   eyebrow?: string;
@@ -15,32 +10,27 @@ type PagePlaceholderProps = {
 };
 
 /**
- * Branded placeholder for pages scheduled in later stages.
- * Keeps every navigation link working (200, not 404) until the real page replaces it.
+ * Figma-style placeholder for pages whose final content is still being written
+ * (policies, journal articles). Keeps every link working (200, not 404).
  */
 export function PagePlaceholder({
   eyebrow = "Coming soon",
   title,
-  description = "We are carefully crafting this page. In the meantime, explore our spirulina collection.",
-  primary = { label: "Explore Products", href: "/#featured-products" },
+  description = "We are carefully writing this page. In the meantime, explore our spirulina.",
+  primary = { label: "Shop spirulina", href: "/shop/spirulina-capsules" },
   children,
 }: PagePlaceholderProps) {
   return (
-    <section className="relative overflow-hidden">
-      <LeafSprig className="pointer-events-none absolute -top-6 -right-12 w-56 rotate-[200deg] opacity-25" />
-      <Container size="narrow" className="section-y relative flex flex-col items-center gap-8 text-center">
-        <SectionHeading as="h1" eyebrow={eyebrow} title={title} marathi={siteConfig.tagline} description={description} />
-        {children}
-        <div className="flex flex-col gap-3 xs:flex-row">
-          <PrimaryButton href={primary.href} rightIcon={<ArrowRight />}>
-            {primary.label}
-          </PrimaryButton>
-          <SecondaryButton href="/" leftIcon={<ArrowLeft />}>
-            Back to home
-          </SecondaryButton>
-        </div>
-      </Container>
-      <FeatherWave className="h-16 sm:h-24" />
-    </section>
+    <PageIntro eyebrow={eyebrow} title={title} description={description} className="pb-16 md:pb-24">
+      {children}
+      <div className="mt-10 flex flex-wrap items-center gap-6">
+        <Link href={primary.href} className="inline-flex h-12 items-center rounded-full bg-teal-deep px-7 font-medium text-ivory transition-colors hover:bg-emerald">
+          {primary.label}
+        </Link>
+        <Link href="/" className="eyebrow text-[0.66rem] text-forest/70 hover:text-emerald">
+          Back to home
+        </Link>
+      </div>
+    </PageIntro>
   );
 }

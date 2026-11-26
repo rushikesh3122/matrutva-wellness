@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 import { JournalCard } from "@/components/journal/JournalCard";
+import { PageIntro } from "@/components/ui/PageIntro";
 import { journalPosts } from "@/data/journal";
 
 export const metadata: Metadata = {
@@ -9,18 +9,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/journal" },
 };
 
-export default function Page() {
+export default function JournalPage() {
   return (
-    <PagePlaceholder
-      eyebrow="Wellness Journal"
-      title="Notes on Natural Living"
-      description="Full articles are being written. Here is what is coming soon."
-    >
-      <div className="grid w-[min(100vw-2.5rem,72rem)] gap-6 text-left sm:grid-cols-2 lg:grid-cols-3">
-        {journalPosts.map((post, i) => (
-          <JournalCard key={post.slug} post={post} index={i} />
-        ))}
-      </div>
-    </PagePlaceholder>
+    <>
+      <PageIntro eyebrow="Wellness Journal" title="Notes on" accent="natural living." description="Short, honest reads on spirulina, labels and building a daily ritual." />
+      <section aria-label="Articles" className="border-t border-forest/10 bg-ivory">
+        <div className="container-luxe grid gap-x-10 gap-y-16 py-20 sm:grid-cols-2 md:py-28 lg:grid-cols-3">
+          {journalPosts.map((post, i) => (
+            <JournalCard key={post.slug} post={post} index={i} />
+          ))}
+        </div>
+      </section>
+    </>
   );
 }
