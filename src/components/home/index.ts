@@ -3,3 +3,8 @@ export { TrustBar } from "./TrustBar";
 export { FeaturedProducts } from "./FeaturedProducts";
 export { WhyMatrutva } from "./WhyMatrutva";
 export { DiscoverSpirulina } from "./DiscoverSpirulina";
+export { OurStory } from "./OurStory";
+export { QualityTransparency } from "./QualityTransparency";
+export { ProcessJourney } from "./ProcessJourney";
+export { Testimonials } from "./Testimonials";
+export { JournalPreview } from "./JournalPreview";
