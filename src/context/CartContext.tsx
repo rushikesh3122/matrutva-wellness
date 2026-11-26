@@ -12,7 +12,8 @@ export type CartItem = {
   id: string;
   slug: string;
   name: string;
-  price: number;
+  /** null while the product price is not announced */
+  price: number | null;
   image?: string;
   quantity: number;
 };
@@ -27,7 +28,7 @@ type CartContextValue = {
   clear: () => void;
 };
 
-const STORAGE_KEY = "matrutva-cart-v1";
+const STORAGE_KEY = "matrutva-cart-v2";
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -84,7 +85,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => ({
       items,
       count: items.reduce((n, i) => n + i.quantity, 0),
-      subtotal: items.reduce((n, i) => n + i.price * i.quantity, 0),
+      subtotal: items.reduce((n, i) => n + (i.price ?? 0) * i.quantity, 0),
       addItem,
       removeItem,
       updateQuantity,

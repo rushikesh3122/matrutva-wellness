@@ -31,11 +31,12 @@ export const mainNav: NavItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-/** Rotating messages in the announcement bar. */
+/** Rotating messages in the announcement bar — edit, add or remove freely. */
 export const announcements: string[] = [
-  "Free shipping across India on orders above ₹999",
-  "100% pure spirulina · Lab tested for purity",
+  "Discover a more natural approach to everyday wellness",
   "Nourishment with a Mother's Care",
+  // Optional — uncomment once your shipping policy is final:
+  // "Free shipping across India on orders above ₹___",
 ];
 
 export const footerNav: { title: string; links: NavItem[] }[] = [
