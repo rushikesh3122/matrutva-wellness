@@ -16,8 +16,8 @@ export function MobileShopBar() {
   const pathname = usePathname();
   const { count } = useCart();
   const hasWhatsApp = Boolean(siteConfig.whatsappNumber);
-  // Product pages show their own sticky "Add to cart" bar instead.
-  if (pathname.startsWith("/shop/")) return null;
+  // Product pages show their own sticky "Add to cart" bar; the checkout steps need no shop shortcuts.
+  if (pathname.startsWith("/shop/") || pathname === "/cart" || pathname.startsWith("/checkout")) return null;
 
   const items = [
     { href: "/shop", label: "Shop", icon: <Store className="size-5" strokeWidth={1.5} /> },

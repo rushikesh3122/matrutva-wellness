@@ -20,6 +20,8 @@ export type CartItem = {
 
 type CartContextValue = {
   items: CartItem[];
+  /** False until the saved cart has been read from localStorage. */
+  ready: boolean;
   count: number;
   subtotal: number;
   addItem: (product: Product, quantity?: number) => void;
@@ -84,6 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartContextValue>(
     () => ({
       items,
+      ready: loaded,
       count: items.reduce((n, i) => n + i.quantity, 0),
       subtotal: items.reduce((n, i) => n + (i.price ?? 0) * i.quantity, 0),
       addItem,
@@ -91,7 +94,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       clear,
     }),
-    [items, addItem, removeItem, updateQuantity, clear],
+    [items, loaded, addItem, removeItem, updateQuantity, clear],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
