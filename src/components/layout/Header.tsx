@@ -46,7 +46,7 @@ export function Header() {
         <div className="container-luxe flex h-18 items-center justify-between gap-6 md:h-21">
           <BrandLogo variant="wordmark" size="sm" />
 
-          <DesktopNavigation className="hidden md:block" />
+          <DesktopNavigation className="hidden lg:block" />
 
           <div className="flex items-center gap-1 sm:gap-2">
             <Link href="/cart" aria-label={`Shopping cart, ${count} ${count === 1 ? "item" : "items"}`} className={iconBtn}>
@@ -76,7 +76,7 @@ export function Header() {
               aria-label="Open menu"
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
-              className={cn(iconBtn, "md:hidden")}
+              className={cn(iconBtn, "lg:hidden")}
             >
               <Menu className="size-5" strokeWidth={1.5} />
             </button>
