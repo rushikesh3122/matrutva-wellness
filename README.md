@@ -83,16 +83,19 @@ src/
 
 ## Design tokens
 
-| Colour          | Hex       | Class            | Use                                         |
-| --------------- | --------- | ---------------- | ------------------------------------------- |
-| Deep Green      | `#0F3D2E` | `emerald`        | primary buttons, footer, headings           |
-| Peacock Teal    | `#0E687A` | `teal`           | labels, links, accents                      |
-| Muted Gold      | `#C9A66A` | `gold`           | lines, icons, logo, text on dark            |
-| Deep Gold       | `#7D5F28` | `gold-deep`      | gold text on light backgrounds (accessible) |
-| Warm Ivory      | `#F6F0E4` | `ivory`          | page background                             |
-| Light Sage      | `#E5EBDD` | `sage`           | soft section background                     |
-| Dark Forest     | `#173B32` | `forest`         | body text                                   |
-| White           | `#FFFFFF` | `white`          | cards                                       |
+| Colour          | Hex       | Class             | Use                                        |
+| --------------- | --------- | ----------------- | ------------------------------------------ |
+| Deep Green      | `#123324` | `emerald`         | headings, dark sections, Order button      |
+| Peacock Teal    | `#1F8A80` | `teal`            | large accents (hero "Nothing else.")       |
+| Teal (text)     | `#176B63` | `teal-deep`       | small teal text, teal buttons (AA)         |
+| Saffron         | `#E7A53A` | `gold`            | numerals, Devanagari, turmeric button      |
+| Moss            | `#2C6244` | `moss`            | moringa accent                             |
+| Terracotta      | `#A4532A` | `terracotta-deep` | fruit & veg accent                         |
+| Aqua            | `#37C6B6` | `aqua`            | highlight on deep green                    |
+| Warm Ivory      | `#F7F5EF` | `ivory`           | page background                            |
+| Ink             | `#0C2419` | `forest`          | body text                                  |
+
+Fonts (bundled in `src/fonts/`): **Kalnia** for headings and numbers, **Figtree** for body text, **DM Mono** for small capitals labels, **Tiro Devanagari Marathi** for मातृवत् पोषणम्, and **Cinzel** only for the MATRUTVA wordmark.
 
 - **Type:** Cinzel (`font-display`, headings), Cormorant Garamond (`font-serif`, accents), Jost (`font-sans`, body), Tiro Devanagari Marathi (`font-devanagari`).
   Sizes: `text-display`, `text-h1` … `text-h4`, `text-lead`, `text-body`, `text-caption`, `text-label`.

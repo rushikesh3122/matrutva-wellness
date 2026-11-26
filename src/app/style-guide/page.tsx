@@ -29,14 +29,14 @@ const colours = [
 ];
 
 const typeScale = [
-  { token: "text-display", cls: "font-display text-display", sample: "Pure Nourishment", note: "Cinzel 500 · hero" },
-  { token: "text-h1", cls: "font-display text-h1", sample: "Discover Spirulina", note: "Cinzel 500 · page title" },
-  { token: "text-h2", cls: "font-display text-h2", sample: "Our Story", note: "Cinzel 500 · section" },
-  { token: "text-h3", cls: "font-display text-h3", sample: "Lab Tested Purity", note: "Cinzel 500 · card title" },
-  { token: "text-h4", cls: "font-serif text-h4 italic", sample: "Nourishment with a Mother's Care", note: "Cormorant 500 · accent" },
-  { token: "text-lead", cls: "text-lead", sample: "A natural superfood for everyday vitality.", note: "Jost 400 · intro" },
-  { token: "text-body", cls: "text-body", sample: "Clean, modern and readable body text.", note: "Jost 400 · body" },
-  { token: "text-caption", cls: "text-caption text-forest/80", sample: "60 vegetarian capsules · 500 mg", note: "Jost 400 · meta" },
+  { token: "text-display", cls: "font-display text-display", sample: "Pure Nourishment", note: "Kalnia 400 · hero" },
+  { token: "text-h1", cls: "font-display text-h1", sample: "Discover Spirulina", note: "Kalnia 400 · page title" },
+  { token: "text-h2", cls: "font-display text-h2", sample: "Our Story", note: "Kalnia 400 · section" },
+  { token: "text-h3", cls: "font-display text-h3", sample: "Lab Tested Purity", note: "Kalnia 400 · card title" },
+  { token: "text-h4", cls: "font-serif text-h4 italic", sample: "Nourishment with a Mother's Care", note: "Kalnia 400 · accent" },
+  { token: "text-lead", cls: "text-lead", sample: "A natural superfood for everyday vitality.", note: "Figtree 400 · intro" },
+  { token: "text-body", cls: "text-body", sample: "Clean, modern and readable body text.", note: "Figtree 400 · body" },
+  { token: "text-caption", cls: "text-caption text-forest/80", sample: "60 vegetarian capsules · 500 mg", note: "Figtree 400 · meta" },
   { token: "text-label", cls: "eyebrow text-teal", sample: "Natural Wellness", note: "Jost 500 · labels" },
 ];
 

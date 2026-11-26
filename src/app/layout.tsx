@@ -13,9 +13,24 @@ import "./globals.css";
 /*
  * Fonts are bundled in src/fonts (no internet needed for `npm run dev` or `npm run build`).
  * next/font optimises them: preloading, size-matched fallbacks (no layout shift), long caching.
- * Cinzel, Jost and Cormorant are variable fonts: one small file covers every weight.
+ * Kalnia and Figtree are variable fonts: one small file covers every weight.
  */
 /** Headings + wordmark: flared classical capitals matching MATRUTVA */
+const kalnia = localFont({
+  src: "../fonts/kalnia-latin-var.woff2",
+  variable: "--font-kalnia",
+  weight: "100 700",
+  display: "swap",
+  fallback: ["Georgia", "serif"],
+});
+const figtree = localFont({
+  src: "../fonts/figtree-latin-var.woff2",
+  variable: "--font-figtree",
+  weight: "300 900",
+  display: "swap",
+  fallback: ["system-ui", "Arial", "sans-serif"],
+});
+// Cinzel is kept only for the MATRUTVA wordmark, which is drawn in it.
 const cinzel = localFont({
   src: "../fonts/cinzel-latin-var.woff2",
   variable: "--font-cinzel",
@@ -23,26 +38,14 @@ const cinzel = localFont({
   display: "swap",
   fallback: ["Georgia", "serif"],
 });
-/** Editorial serif for quotes and italic accents */
-const cormorant = localFont({
-  src: [
-    { path: "../fonts/cormorant-garamond-latin-var.woff2", weight: "300 700", style: "normal" },
-    { path: "../fonts/cormorant-garamond-italic-latin-var.woff2", weight: "300 700", style: "italic" },
-  ],
-  variable: "--font-cormorant",
+const dmMono = localFont({
+  src: "../fonts/dm-mono-400-latin.woff2",
+  variable: "--font-dm-mono",
+  weight: "400",
   display: "swap",
   preload: false,
-  fallback: ["Georgia", "serif"],
+  fallback: ["ui-monospace", "monospace"],
 });
-/** Body text and spaced labels ("W E L L N E S S") */
-const jost = localFont({
-  src: "../fonts/jost-latin-var.woff2",
-  variable: "--font-jost",
-  weight: "100 900",
-  display: "swap",
-  fallback: ["system-ui", "Arial", "sans-serif"],
-});
-/** Marathi tagline */
 const tiro = localFont({
   src: "../fonts/tiro-devanagari-marathi-devanagari.woff2",
   variable: "--font-tiro",
@@ -83,14 +86,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0F3D2E",
+  themeColor: "#123324",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={`${cinzel.variable} ${cormorant.variable} ${jost.variable} ${tiro.variable} h-full`}>
+    <html lang="en-IN" className={`${kalnia.variable} ${figtree.variable} ${cinzel.variable} ${dmMono.variable} ${tiro.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <a
           href="#main"

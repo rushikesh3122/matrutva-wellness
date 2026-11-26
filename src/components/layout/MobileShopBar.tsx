@@ -3,29 +3,29 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mail, ShoppingBag, Store } from "lucide-react";
-import { siteConfig } from "@/lib/site";
+import { orderHref, siteConfig } from "@/lib/site";
 import { useCart } from "@/context/CartContext";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { cn } from "@/lib/utils";
 
 /**
  * Sticky bottom bar on phones: Shop, Cart and a contact shortcut.
- * Shows WhatsApp once siteConfig.social.whatsapp holds a real link, otherwise the Contact page.
+ * Shows WhatsApp once siteConfig.whatsappNumber is set, otherwise the Contact page.
  */
 export function MobileShopBar() {
   const pathname = usePathname();
   const { count } = useCart();
-  const hasWhatsApp = siteConfig.social.whatsapp.startsWith("http");
+  const hasWhatsApp = Boolean(siteConfig.whatsappNumber);
 
   const items = [
-    { href: "/shop", label: "Shop", icon: <Store className="size-5" strokeWidth={1.5} /> },
+    { href: "/#products", label: "Shop", icon: <Store className="size-5" strokeWidth={1.5} /> },
     {
       href: "/cart",
       label: count > 0 ? `Cart (${count})` : "Cart",
       icon: <ShoppingBag className="size-5" strokeWidth={1.5} />,
     },
     hasWhatsApp
-      ? { href: siteConfig.social.whatsapp, label: "WhatsApp", icon: <WhatsAppIcon className="size-5" />, external: true }
+      ? { href: orderHref(), label: "WhatsApp", icon: <WhatsAppIcon className="size-5" />, external: true }
       : { href: "/contact", label: "Contact", icon: <Mail className="size-5" strokeWidth={1.5} /> },
   ];
 
@@ -46,7 +46,7 @@ export function MobileShopBar() {
                   {...("external" in item ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-full flex-col items-center justify-center gap-1 text-label tracking-[0.14em] uppercase transition-colors",
+                    "flex h-full flex-col items-center justify-center gap-1 font-mono text-[0.62rem] tracking-[0.18em] uppercase transition-colors",
                     active ? "text-gold-light" : "text-ivory/90 hover:text-gold-light",
                   )}
                 >

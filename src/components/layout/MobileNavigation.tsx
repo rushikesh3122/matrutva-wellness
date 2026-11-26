@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
 import { Mail, Phone, X } from "lucide-react";
-import { mainNav, siteConfig } from "@/lib/site";
+import { allPages, siteConfig } from "@/lib/site";
 import { cn, isActivePath } from "@/lib/utils";
 import { useLockBody } from "@/hooks/useLockBody";
 import { BrandLogo } from "@/components/brand/BrandLogo";
@@ -59,7 +59,7 @@ export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
                 animate="show"
                 variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.15 } } }}
               >
-                {mainNav.map((item) => {
+                {allPages.map((item) => {
                   const active = isActivePath(pathname, item.href);
                   return (
                     <m.li
