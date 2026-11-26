@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
@@ -25,7 +26,16 @@ export async function generateMetadata({ params }: PageProps<"/[page]">): Promis
   return p ? { title: p.title, description: p.description, alternates: { canonical: `/${page}` } } : {};
 }
 
-export default async function LegalPage({ params }: PageProps<"/[page]">) {
+/** Reads the URL param inside Suspense so the page shell can be prefetched for instant navigation. */
+export default function Page({ params }: PageProps<"/[page]">) {
+  return (
+    <Suspense fallback={<div aria-hidden className="bg-ivory"><div className="container-luxe py-24"><div className="h-14 w-2/3 animate-pulse rounded bg-sage/60" /></div></div>}>
+      <LegalDetails params={params} />
+    </Suspense>
+  );
+}
+
+async function LegalDetails({ params }: Pick<PageProps<"/[page]">, "params">) {
   const { page } = await params;
   const p = pages[page];
   if (!p) notFound();
