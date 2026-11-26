@@ -9,7 +9,7 @@ No payment gateway is integrated.
 
 - Node.js **20.9 or newer** (check with `node -v`)
 - npm (comes with Node.js)
-- Internet connection on first run (Google Fonts are downloaded by Next.js)
+- Fonts are bundled in `src/fonts/`, so no font downloads are needed to run the site
 
 ## Run it in VS Code
 
@@ -22,6 +22,22 @@ npm run dev
 ```
 
 Open http://localhost:3000 and http://localhost:3000/style-guide
+
+After pulling new changes, run `npm install` only if `package.json` or `package-lock.json` changed. Otherwise `npm run dev` is enough.
+
+## Faster `npm install` and `npm run dev` on Windows
+
+The first `npm run dev` compiles the site and saves a cache in `.next/`. Later runs reuse it and start much faster, so don't delete `.next/` unless something breaks. The first page you open after starting also takes a few seconds while it compiles.
+
+Most of the remaining slowness on Windows comes from the PC scanning or syncing thousands of small files in `node_modules/` and `.next/`:
+
+1. **Exclude the project folder from Windows Defender.** Open Windows Security, go to Virus & threat protection, then Manage settings, then Exclusions, and add the project folder. This is usually the biggest win for both install and dev start.
+2. **Keep the project out of OneDrive.** Folders like Desktop and Documents are often synced by OneDrive. Move the project to a plain folder such as `C:\dev\matrutva-wellness`.
+3. **Use Node.js 22 LTS** from nodejs.org. Newer Node versions install and run faster.
+4. **Use `npm ci` for a clean reinstall.** It is faster than `npm install` when `node_modules` is missing or broken.
+5. Close other heavy apps while the first compile runs. VS Code's own file watcher is fine.
+
+The project's `.npmrc` already turns off npm's audit and funding checks during install, which saves a few network round trips.
 
 ## Other commands
 
