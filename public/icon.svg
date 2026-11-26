@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 210" >
+<defs>
+<linearGradient id="neck" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0E5A47"/><stop offset="1" stop-color="#003D32"/></linearGradient>
+<linearGradient id="teal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E7A78"/><stop offset="1" stop-color="#005A5E"/></linearGradient>
+<linearGradient id="leaf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4C9A62"/><stop offset="1" stop-color="#1F6B4A"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C48A"/><stop offset="1" stop-color="#B08A4A"/></linearGradient>
+<radialGradient id="eye" cx="0.5" cy="0.55" r="0.6"><stop offset="0" stop-color="#F0C25A"/><stop offset="1" stop-color="#C98A2E"/></radialGradient>
+</defs>
+
+<!-- gold ring -->
+<circle cx="98" cy="17" r="6.5" fill="none" stroke="url(#gold)" stroke-width="4"/>
+<!-- outer left blade -->
+<path d="M80 196 C52 184 22 160 15 128 C12 118 14 110 20 102 C20 128 34 156 58 176 C66 183 74 190 80 196 Z" fill="url(#leaf)"/>
+<!-- inner left blade -->
+<path d="M88 196 C60 180 32 150 28 112 C26 94 36 78 50 66 C42 88 42 116 54 142 C63 162 76 180 88 196 Z" fill="url(#teal)"/>
+<!-- neck -->
+<path d="M100 198 C92 180 72 160 64 132 C54 100 56 66 76 46 C92 30 116 26 130 38 C140 47 139 62 127 68 C124 70 120 69 121 66 C129 60 129 48 117 44 C106 40 95 44 89 55 C82 68 84 86 92 102 C102 122 118 138 118 160 C118 178 110 190 100 198 Z" fill="url(#neck)"/>
+<circle cx="111" cy="56" r="8.5" fill="url(#gold)"/>
+<!-- right leaf -->
+<path d="M108 196 C140 186 168 160 172 128 C173 120 172 113 170 108 C164 136 146 160 124 178 C118 184 112 190 108 196 Z" fill="url(#leaf)"/>
+<!-- feather -->
+<path d="M146 66 C160 82 168 102 166 124 C164 144 152 158 138 164 C128 158 122 146 122 130 C122 104 134 82 146 66 Z" fill="#1E6A4E"/>
+<path d="M146 76 C156 92 160 106 158 124 C156 140 148 150 139 155 C132 150 129 140 129 128 C129 108 138 90 146 76 Z" fill="#2A8064" opacity=".7"/>
+<path d="M138 164 C132 176 124 186 114 192" stroke="#1E6A4E" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<ellipse cx="143" cy="124" rx="13" ry="17" fill="url(#eye)"/>
+<ellipse cx="143" cy="126" rx="9.5" ry="11" fill="#17A2B8"/>
+<ellipse cx="143" cy="127" rx="6.5" ry="7.5" fill="#1B2A6B"/>
+</svg>
