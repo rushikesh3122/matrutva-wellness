@@ -23,12 +23,20 @@ export function OrderConfirm() {
     }
   }, []);
 
-  if (order === undefined) return <div className="mt-12 h-64 animate-pulse rounded-figure bg-sage/50" aria-hidden />;
+  if (order === undefined)
+    return (
+      <div
+        className="mt-12 h-64 animate-pulse rounded-figure bg-sage/50"
+        aria-hidden
+      />
+    );
 
   if (order === null) {
     return (
       <div className="mt-12 rounded-figure border border-forest/10 bg-white p-10 text-center">
-        <p className="text-forest/80">There is no order to confirm on this device.</p>
+        <p className="text-forest/80">
+          There is no order to confirm on this device.
+        </p>
         <PrimaryButton href="/shop" className="mt-6">
           Go to shop
         </PrimaryButton>
@@ -43,22 +51,28 @@ export function OrderConfirm() {
     <div className="mt-12 grid items-start gap-8 lg:grid-cols-[1fr_24rem] lg:gap-10">
       <div className="rounded-figure border border-forest/10 bg-white p-6 sm:p-10">
         <p className="eyebrow text-teal-deep">Order {order.number}</p>
-        <h2 className="mt-4 font-display text-3xl text-emerald">{sent ? "Thank you! We'll be in touch." : "One last step: send it to us."}</h2>
+        <h2 className="mt-4 font-display text-3xl text-emerald">
+          {order.saved ? "Thank you! We've received your order." : sent ? "Thank you! We'll be in touch." : "One last step: send it to us."}
+        </h2>
         <p className="mt-4 max-w-lg leading-relaxed text-forest/75">
-          {channel === "WhatsApp"
-            ? "Tap the button to send your order on WhatsApp. We reply to confirm stock, shipping and payment, usually within working hours."
-            : "Tap the button to email your order to us. We reply to confirm stock, shipping and payment, usually within working hours."}
+          {order.saved
+            ? `We'll contact you on ${d.phone} to confirm shipping and payment, usually within working hours.${channel === "WhatsApp" ? " For a faster reply, you can also send it to us on WhatsApp." : ""}`
+            : channel === "WhatsApp"
+              ? "Tap the button to send your order on WhatsApp. We reply to confirm stock, shipping and payment, usually within working hours."
+              : "Tap the button to email your order to us. We reply to confirm stock, shipping and payment, usually within working hours."}
         </p>
-        <a
-          href={href}
-          target={channel === "WhatsApp" ? "_blank" : undefined}
-          rel={channel === "WhatsApp" ? "noopener noreferrer" : undefined}
-          onClick={() => setSent(true)}
-          className="mt-8 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald sm:w-auto"
-        >
-          {channel === "WhatsApp" ? <WhatsAppIcon className="size-5" /> : <Mail className="size-5" aria-hidden />}
-          Send order by {channel}
-        </a>
+        {!(order.saved && channel === "email") && (
+          <a
+            href={href}
+            target={channel === "WhatsApp" ? "_blank" : undefined}
+            rel={channel === "WhatsApp" ? "noopener noreferrer" : undefined}
+            onClick={() => setSent(true)}
+            className="mt-8 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald sm:w-auto"
+          >
+            {channel === "WhatsApp" ? <WhatsAppIcon className="size-5" /> : <Mail className="size-5" aria-hidden />}
+            Send order by {channel}
+          </a>
+        )}
 
         <div className="mt-10 grid gap-6 border-t border-forest/10 pt-8 text-sm sm:grid-cols-2">
           <div>
@@ -92,7 +106,10 @@ export function OrderConfirm() {
         </div>
         <p className="mt-8 text-sm text-forest/70">
           Something wrong?{" "}
-          <Link href="/contact" className="text-teal-deep underline underline-offset-4">
+          <Link
+            href="/contact"
+            className="text-teal-deep underline underline-offset-4"
+          >
             Contact us
           </Link>{" "}
           with your order number.

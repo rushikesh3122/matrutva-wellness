@@ -9,7 +9,7 @@ import {
   RitualSection,
   StatsStrip,
 } from "@/components/home";
-import { products } from "@/data/products";
+import { getLiveProducts } from "@/lib/live-products";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 };
 
 /** Homepage in the Figma style, focused on our one product: Spirulina Capsules. */
-export default function HomePage() {
-  const spirulina = products[0];
+export default async function HomePage() {
+  const [spirulina] = await getLiveProducts();
   return (
     <>
       <HeroSection />

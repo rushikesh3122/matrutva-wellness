@@ -21,7 +21,55 @@ export type PlacedOrder = {
   createdAt: string;
   items: CartItem[];
   details: CheckoutDetails;
+  /** true once the order is saved in the admin dashboard */
+  saved?: boolean;
+  /** total confirmed by the server (prices from the database) */
+  total?: number;
 };
+
+/**
+ * Saves the order through the database function `place_order` (prices are taken from the
+ * database, never from the browser). Returns null if the database isn't set up or can't be
+ * reached, so checkout still works by WhatsApp / email.
+ */
+export async function saveOrder(
+  items: CartItem[],
+  d: CheckoutDetails,
+): Promise<{ number: string; total: number } | { error: string } | null> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) return null;
+  try {
+    const res = await fetch(`${url}/rest/v1/rpc/place_order`, {
+      method: "POST",
+      headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customer: {
+          first_name: d.firstName,
+          last_name: d.lastName,
+          phone: d.phone,
+          email: d.email,
+          address1: d.address1,
+          address2: d.address2,
+          city: d.city,
+          state: d.state,
+          pincode: d.pincode,
+          gstin: d.gstin,
+          notes: d.notes,
+        },
+        items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
+      }),
+      signal: AbortSignal.timeout(10000),
+    });
+    const body = (await res.json().catch(() => null)) as { number?: string; total?: number; message?: string } | null;
+    if (res.ok && body?.number) return { number: body.number, total: body.total ?? 0 };
+    // A message raised by place_order (e.g. "Only 3 left of …") is shown to the customer.
+    if (res.status === 400 && body?.message) return { error: body.message };
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export const LAST_ORDER_KEY = "matrutva-last-order";
 
@@ -47,7 +95,7 @@ export function orderMessage(order: PlacedOrder) {
   ].filter(Boolean);
   return [
     `Hi ${siteConfig.name}, I'd like to place this order.`,
-    [`Order: ${order.number}`, ...items, `Subtotal: ${formatPrice(subtotal)} (shipping to be confirmed)`].join("\n"),
+    [`Order: ${order.number}`, ...items, `Subtotal: ${formatPrice(order.total ?? subtotal)} (shipping to be confirmed)`].join("\n"),
     customer.join("\n"),
   ].join("\n\n");
 }
