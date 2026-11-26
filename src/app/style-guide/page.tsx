@@ -40,33 +40,7 @@ const typeScale = [
   { token: "text-label", cls: "eyebrow text-teal", sample: "Natural Wellness", note: "Jost 500 · labels" },
 ];
 
-const base = products[0];
-const demoProducts: Product[] = [
-  base,
-  {
-    ...base,
-    id: "spirulina-capsules-120",
-    slug: "spirulina-capsules-120",
-    name: "Spirulina Capsules · Family Pack",
-    subtitle: "120 Vegetarian Capsules · 500 mg",
-    price: 1099,
-    mrp: 1499,
-    badge: "Best value",
-    images: [base.images[1], base.images[0]],
-  },
-  {
-    ...base,
-    id: "spirulina-powder",
-    slug: "spirulina-powder",
-    name: "Spirulina Powder",
-    subtitle: "100 g · Coming soon",
-    price: 449,
-    mrp: undefined,
-    badge: undefined,
-    rating: undefined,
-    inStock: false,
-  },
-];
+const demoProducts: Product[] = products.slice(0, 3);
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (

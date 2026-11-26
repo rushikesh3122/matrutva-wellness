@@ -18,7 +18,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
-    return products.filter((p) => `${p.name} ${p.subtitle ?? ""} ${p.description}`.toLowerCase().includes(q));
+    return products.filter((p) => `${p.name} ${p.shortDescription} ${p.quantity} ${p.description}`.toLowerCase().includes(q));
   }, [query]);
 
   return (
@@ -97,7 +97,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                       >
                         <span>
                           <span className="block font-display text-emerald">{p.name}</span>
-                          <span className="text-sm text-forest/60">{p.subtitle}</span>
+                          <span className="text-sm text-forest/60">{p.quantity}</span>
                         </span>
                         <span className="flex items-center gap-3 text-emerald">
                           {formatPrice(p.price)}

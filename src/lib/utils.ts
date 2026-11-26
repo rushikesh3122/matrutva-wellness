@@ -6,8 +6,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Format a number as Indian Rupees, e.g. 1299 → "₹1,299". */
-export function formatPrice(amount: number) {
+/** Format a number as Indian Rupees, e.g. 1299 → "₹1,299". null → "Price coming soon". */
+export function formatPrice(amount: number | null | undefined) {
+  if (amount === null || amount === undefined) return "Price coming soon";
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
