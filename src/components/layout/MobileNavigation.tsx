@@ -2,39 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { Mail, Phone, X } from "lucide-react";
 import { mainNav, siteConfig } from "@/lib/site";
-import { cn } from "@/lib/utils";
-import { Logo } from "@/components/brand/Logo";
+import { cn, isActivePath } from "@/lib/utils";
+import { useLockBody } from "@/hooks/useLockBody";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { FeatherWave } from "@/components/brand/FeatherWave";
-import { isActivePath } from "./Navigation";
 
-type MobileMenuProps = { open: boolean; onClose: () => void };
+type MobileNavigationProps = { open: boolean; onClose: () => void };
 
-/** Full-height slide-in navigation drawer for mobile and tablet. */
-export function MobileMenu({ open, onClose }: MobileMenuProps) {
+/** Slide-in navigation drawer for mobile and tablet (below 1280px). */
+export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
   const pathname = usePathname();
-
-  // Lock page scroll and close on Escape while open.
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open, onClose]);
+  useLockBody(open, onClose);
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          <motion.div
+          <m.div
             key="backdrop"
             className="fixed inset-0 z-50 bg-forest/40 backdrop-blur-sm xl:hidden"
             initial={{ opacity: 0 }}
@@ -42,9 +29,9 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
-          <motion.aside
+          <m.aside
             key="panel"
-            id="mobile-menu"
+            id="mobile-navigation"
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
@@ -55,28 +42,27 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="flex items-center justify-between border-b border-gold/20 px-6 py-5">
-              <Logo layout="horizontal" href="/" />
+              <BrandLogo variant="horizontal" href="/" />
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close menu"
-                className="grid size-10 place-items-center rounded-full text-emerald hover:bg-emerald/5"
+                className="grid size-10 place-items-center rounded-full text-emerald transition hover:bg-emerald/5"
               >
                 <X className="size-5" />
               </button>
             </div>
 
-            <nav aria-label="Mobile" className="flex-1 px-6 py-6">
-              <motion.ul
+            <nav aria-label="Mobile" className="flex-1 px-6 py-4">
+              <m.ul
                 initial="hidden"
                 animate="show"
                 variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.15 } } }}
-                className="flex flex-col"
               >
                 {mainNav.map((item) => {
                   const active = isActivePath(pathname, item.href);
                   return (
-                    <motion.li
+                    <m.li
                       key={item.href}
                       variants={{ hidden: { opacity: 0, x: 24 }, show: { opacity: 1, x: 0 } }}
                       className="border-b border-gold/15"
@@ -91,22 +77,31 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                         )}
                       >
                         {item.label}
-                        {active && <span className="size-1.5 rounded-full bg-gold" />}
+                        <span
+                          aria-hidden
+                          className={cn("size-1.5 rounded-full bg-gold transition-opacity", active ? "opacity-100" : "opacity-0")}
+                        />
                       </Link>
-                    </motion.li>
+                    </m.li>
                   );
                 })}
-              </motion.ul>
+              </m.ul>
             </nav>
 
-            <div className="relative px-6 pt-4 pb-10">
-              <p lang="mr" className="font-devanagari text-lg text-gold">
+            <div className="space-y-3 px-6 pt-2 pb-10 text-sm text-forest/70">
+              <p lang="mr" className="font-devanagari text-lg text-gold-deep">
                 {siteConfig.tagline}
               </p>
-              <p className="mt-1 text-sm text-forest/60">{siteConfig.taglineMeaning}</p>
-              <FeatherWave className="mt-6 h-10" />
+              <p>{siteConfig.taglineMeaning}</p>
+              <p className="flex items-center gap-2 pt-2">
+                <Mail className="size-4 text-teal" /> {siteConfig.contact.email}
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone className="size-4 text-teal" /> {siteConfig.contact.phone}
+              </p>
+              <FeatherWave className="mt-4 h-10" />
             </div>
-          </motion.aside>
+          </m.aside>
         </>
       )}
     </AnimatePresence>

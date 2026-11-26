@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { LogoMark } from "@/components/brand/LogoMark";
@@ -41,15 +41,16 @@ export function SectionHeading({
   const dark = tone === "dark";
 
   return (
-    <motion.div
-      initial="hidden"
+    <m.div
+      // h1 is usually the largest element on screen: show it instantly for a fast LCP
+      initial={Tag === "h1" ? false : "hidden"}
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
       transition={{ staggerChildren: 0.12 }}
       className={cn("flex max-w-3xl flex-col gap-4", centered ? "mx-auto items-center text-center" : "items-start text-left", className)}
     >
       {(eyebrow || ornament) && (
-        <motion.div
+        <m.div
           variants={fadeUp}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="flex items-center gap-3"
@@ -58,10 +59,10 @@ export function SectionHeading({
           {ornament && <LogoMark variant="gold" className="w-5" title="" />}
           {eyebrow && <span className={cn("eyebrow", dark ? "text-teal" : "text-gold-light")}>{eyebrow}</span>}
           {ornament && <span aria-hidden className="h-px w-10 bg-gradient-to-l from-transparent to-gold" />}
-        </motion.div>
+        </m.div>
       )}
 
-      <motion.div variants={fadeUp} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+      <m.div variants={fadeUp} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
         <Tag
           className={cn(
             "font-display text-3xl leading-tight font-medium text-balance sm:text-4xl lg:text-5xl",
@@ -70,28 +71,28 @@ export function SectionHeading({
         >
           {title}
         </Tag>
-      </motion.div>
+      </m.div>
 
       {marathi && (
-        <motion.p
+        <m.p
           variants={fadeUp}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           lang="mr"
-          className="font-devanagari text-lg text-gold sm:text-xl"
+          className={cn("font-devanagari text-lg sm:text-xl", dark ? "text-gold-deep" : "text-gold")}
         >
           {marathi}
-        </motion.p>
+        </m.p>
       )}
 
       {description && (
-        <motion.p
+        <m.p
           variants={fadeUp}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className={cn("text-base leading-relaxed text-pretty sm:text-lg", dark ? "text-forest/75" : "text-ivory/80")}
         >
           {description}
-        </motion.p>
+        </m.p>
       )}
-    </motion.div>
+    </m.div>
   );
 }

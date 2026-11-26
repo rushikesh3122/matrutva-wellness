@@ -1,33 +1,38 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Menu, Search, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { siteConfig } from "@/lib/site";
-import { Logo } from "@/components/brand/Logo";
-import { Navigation } from "./Navigation";
-import { MobileMenu } from "./MobileMenu";
+import { useCart } from "@/context/CartContext";
+import { BrandLogo } from "@/components/brand/BrandLogo";
+import { AnnouncementBar } from "./AnnouncementBar";
+import { DesktopNavigation } from "./DesktopNavigation";
 
-type HeaderProps = {
-  /** Number of items in the cart. Connected to cart state in a later stage. */
-  cartCount?: number;
-  /** Show the thin announcement strip above the header */
-  announcement?: string | null;
-};
+// The menu drawer and search panel load only when first opened, keeping the initial page light.
+const MobileNavigation = dynamic(() => import("./MobileNavigation").then((m) => m.MobileNavigation), { ssr: false });
+const SearchOverlay = dynamic(() => import("./SearchOverlay").then((m) => m.SearchOverlay), { ssr: false });
 
 const iconBtn =
-  "relative grid size-10 place-items-center rounded-full text-emerald transition-colors hover:bg-emerald/5 hover:text-teal";
+  "relative grid size-10 place-items-center rounded-full text-emerald transition-colors duration-300 hover:bg-emerald/5 hover:text-teal";
 
-/** Sticky site header. Turns frosted ivory with a shadow once the page scrolls. */
-export function Header({
-  cartCount = 0,
-  announcement = "Free shipping across India on orders above ₹999",
-}: HeaderProps) {
+/**
+ * Sticky site header.
+ * - below 640px: compact logo, search, cart, menu
+ * - 640–1279px: full horizontal logo, search, cart, menu
+ * - 1280px+: full logo, desktop navigation, search, cart
+ */
+export function Header({ showAnnouncement = true }: { showAnnouncement?: boolean }) {
+  const { count } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  // Mount overlays after first use so their code is fetched on demand
+  const [menuUsed, setMenuUsed] = useState(false);
+  const [searchUsed, setSearchUsed] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -38,74 +43,62 @@ export function Header({
 
   return (
     <>
-      {announcement && (
-        <div className="bg-emerald text-ivory">
-          <p className="container-luxe flex h-9 items-center justify-center gap-3 text-center text-[0.65rem] tracking-[0.2em] uppercase sm:text-xs">
-            <span className="hidden font-devanagari tracking-normal text-gold-light normal-case sm:inline" lang="mr">
-              {siteConfig.tagline}
-            </span>
-            <span aria-hidden className="hidden h-3 w-px bg-gold/50 sm:inline-block" />
-            <span>{announcement}</span>
-          </p>
-        </div>
-      )}
+      {showAnnouncement && <AnnouncementBar />}
 
-      <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      <header
         className={cn(
           "sticky top-0 z-40 w-full transition-all duration-500 ease-luxe",
-          scrolled
-            ? "border-b border-gold/20 bg-ivory/85 shadow-soft backdrop-blur-md"
-            : "border-b border-transparent bg-ivory",
+          scrolled ? "border-b border-gold/25 bg-ivory/85 shadow-soft backdrop-blur-md" : "border-b border-gold/10 bg-ivory",
         )}
       >
         <div
           className={cn(
-            "container-luxe flex items-center justify-between gap-6 transition-all duration-500",
-            scrolled ? "h-16" : "h-20 lg:h-24",
+            "container-luxe flex items-center justify-between gap-6 transition-[height] duration-500 ease-luxe",
+            scrolled ? "h-16" : "h-18 lg:h-22",
           )}
         >
-          <Logo layout="horizontal" />
+          <BrandLogo variant="compact" className="sm:hidden" />
+          <BrandLogo variant="horizontal" className="hidden sm:inline-flex" />
 
-          <Navigation className="hidden xl:block" />
+          <DesktopNavigation className="hidden xl:block" />
 
-          <div className="flex items-center gap-0.5 sm:gap-1">
-            <button type="button" aria-label="Search" className={cn(iconBtn, "hidden sm:grid")}>
+          <div className="flex items-center gap-1">
+            <button type="button" aria-label="Search" onClick={() => {
+                setSearchUsed(true);
+                setSearchOpen(true);
+              }} className={iconBtn}>
               <Search className="size-[1.15rem]" />
             </button>
-            <Link href="/account" aria-label="Account" className={cn(iconBtn, "hidden sm:grid")}>
-              <User className="size-[1.15rem]" />
-            </Link>
-            <Link href="/cart" aria-label={`Cart, ${cartCount} items`} className={iconBtn}>
+            <Link href="/cart" aria-label={`Shopping cart, ${count} ${count === 1 ? "item" : "items"}`} className={iconBtn}>
               <ShoppingBag className="size-[1.15rem]" />
-              {cartCount > 0 && (
-                <motion.span
-                  key={cartCount}
-                  initial={{ scale: 0.4 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-gold px-1 text-[0.6rem] leading-5 font-semibold text-emerald"
+              {count > 0 && (
+                <span
+                  key={count}
+                  className="animate-pop absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[0.625rem] font-semibold text-emerald"
                 >
-                  {cartCount}
-                </motion.span>
+                  {count > 99 ? "99+" : count}
+                </span>
               )}
             </Link>
             <button
               type="button"
-              onClick={() => setMenuOpen(true)}
+              onClick={() => {
+                setMenuUsed(true);
+                setMenuOpen(true);
+              }}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              aria-controls="mobile-menu"
+              aria-controls="mobile-navigation"
               className={cn(iconBtn, "xl:hidden")}
             >
               <Menu className="size-5" />
             </button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
-      <MobileMenu open={menuOpen} onClose={closeMenu} />
+      {menuUsed && <MobileNavigation open={menuOpen} onClose={closeMenu} />}
+      {searchUsed && <SearchOverlay open={searchOpen} onClose={closeSearch} />}
     </>
   );
 }

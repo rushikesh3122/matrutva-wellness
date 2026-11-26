@@ -11,7 +11,9 @@
   --color-teal: #006b70; /* Peacock Teal — secondary */
   --color-gold: #c9a66a; /* Muted Gold — accent */
   --color-ivory: #f6f0e4; /* Warm Ivory — background */
-  --color-forest: #173b32; /* Dark Forest — text / footer */
+  --color-forest: #173b32; /* Dark Forest — body text */
+  --color-sage: #e5ebdd; /* Light Sage — soft section background */
+  --color-white: #ffffff;
 
   /* Supporting tints & shades */
   --color-emerald-light: #0e5a47;
@@ -19,6 +21,9 @@
   --color-teal-light: #0e8a8a;
   --color-gold-light: #e2c48a;
   --color-gold-dark: #a8854a;
+  /* Gold for small text on light backgrounds (meets WCAG AA 4.5:1 on ivory/white/sage).
+     Use brand gold (#C9A66A) for lines, icons, large display text and on emerald. */
+  --color-gold-deep: #7d5f28;
   --color-ivory-dark: #ebe2cf;
   --color-ivory-light: #fbf8f1;
   --color-leaf: #2e7d5b;
@@ -29,6 +34,35 @@
   --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-sans: var(--font-jost), "Jost", system-ui, sans-serif;
   --font-devanagari: var(--font-tiro), "Tiro Devanagari Marathi", serif;
+
+  /* Type scale — fluid headings, fixed body sizes */
+  --text-display: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
+  --text-display--line-height: 1.05;
+  --text-h1: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  --text-h1--line-height: 1.1;
+  --text-h2: clamp(1.875rem, 1.35rem + 2.1vw, 3rem);
+  --text-h2--line-height: 1.15;
+  --text-h3: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+  --text-h3--line-height: 1.25;
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 1.35;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.75;
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.2;
+
+  /* Container widths */
+  --container-narrow: 48rem; /* 768px — articles, forms */
+  --container-content: 80rem; /* 1280px — default page width */
+  --container-wide: 96rem; /* 1536px — full-bleed galleries */
+
+  /* Radii — one consistent family */
+  --radius-card: 1.5rem;
+  --radius-panel: 2rem;
 
   /* Extra breakpoints (defaults: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem) */
   --breakpoint-xs: 30rem; /* 480px */
@@ -43,6 +77,26 @@
   --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
 
   --animate-shimmer: shimmer 2.4s linear infinite;
+  --animate-pop: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-ticker: ticker 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  @keyframes pop {
+    from {
+      transform: scale(0.4);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes ticker {
+    from {
+      transform: translateY(14px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
   @keyframes shimmer {
     from {
       background-position: -200% 0;
@@ -84,12 +138,20 @@
 @layer components {
   /* Centered page container with responsive gutters */
   .container-luxe {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+    @apply mx-auto w-full max-w-(--container-content) px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Vertical rhythm for page sections */
+  .section-y {
+    @apply py-16 sm:py-20 lg:py-28;
+  }
+  .section-y-sm {
+    @apply py-10 sm:py-14 lg:py-16;
   }
 
   /* Uppercase spaced label, like "W E L L N E S S" in the wordmark */
   .eyebrow {
-    @apply font-sans text-xs font-medium tracking-[0.3em] uppercase;
+    @apply font-sans text-label font-medium tracking-[0.3em] uppercase;
   }
 
   /* Gold hairline divider */

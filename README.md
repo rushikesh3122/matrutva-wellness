@@ -36,35 +36,60 @@ Open http://localhost:3000 and http://localhost:3000/style-guide
 
 ```
 public/
-  icon.svg                     favicon (peacock mark)
-  images/products/             product images (placeholders cropped from brand board)
+  brand/                       logo files: full logo (SVG/PNG), emblem, gold emblem, favicon
+  images/products/             product images (placeholders cropped from the brand board)
 src/
   app/
-    globals.css                brand colours, fonts, breakpoints, utilities (Tailwind @theme)
-    layout.tsx                 fonts + Header + Footer for every page
-    page.tsx                   temporary home placeholder
-    style-guide/page.tsx       preview of every brand component
+    globals.css                design tokens: colours, type scale, widths, radii, breakpoints
+    layout.tsx                 fonts, SEO metadata, providers, Header + Footer
+    page.tsx                   temporary home placeholder (Stage 3 builds the real homepage)
+    style-guide/page.tsx       live preview of the whole design system
     not-found.tsx              branded "coming soon" page
+    icon.svg, favicon.ico, apple-icon.png, opengraph-image.jpg
+    robots.ts, sitemap.ts, manifest.ts
   components/
-    brand/   Logo, LogoMark (SVG), FeatherWave
-    layout/  Header, Navigation, MobileMenu, Footer, NewsletterForm
-    ui/      Button, Container, SectionHeading
-    product/ ProductCard
+    brand/      BrandLogo, LogoMark (SVG emblem), FeatherWave
+    layout/     AnnouncementBar, Header, DesktopNavigation, MobileNavigation, SearchOverlay, Footer
+    ui/         Button (+ PrimaryButton, SecondaryButton), Container, Section, SectionHeading,
+                NewsletterForm, SocialIcons
+    product/    ProductCard
+    sections/   NewsletterSection
+    providers/  MotionProvider (lightweight Framer Motion)
+    seo/        JsonLd (structured data)
+  context/CartContext.tsx      front-end cart (saved in the browser, no payment gateway)
   data/products.ts             sample product data
-  lib/site.ts                  brand info + navigation links
-  lib/utils.ts                 cn() class helper, formatPrice()
+  hooks/useLockBody.ts         scroll lock + Escape key for drawers
+  lib/site.ts                  brand info, navigation, footer links, announcements
+  lib/seo.ts                   site URL + structured data
+  lib/utils.ts                 cn(), formatPrice(), isActivePath()
   types/product.ts             Product type
 ```
 
-## Brand tokens
+## Design tokens
 
-| Token            | Hex       | Tailwind class      |
-| ---------------- | --------- | ------------------- |
-| Emerald Green    | `#003D32` | `bg-emerald`        |
-| Peacock Teal     | `#006B70` | `text-teal`         |
-| Muted Gold       | `#C9A66A` | `text-gold`         |
-| Warm Ivory       | `#F6F0E4` | `bg-ivory`          |
-| Dark Forest      | `#173B32` | `bg-forest`         |
+| Colour          | Hex       | Class            | Use                                         |
+| --------------- | --------- | ---------------- | ------------------------------------------- |
+| Primary Emerald | `#003D32` | `emerald`        | primary buttons, footer, headings           |
+| Peacock Teal    | `#006B70` | `teal`           | labels, links, accents                      |
+| Muted Gold      | `#C9A66A` | `gold`           | lines, icons, logo, text on dark            |
+| Deep Gold       | `#7D5F28` | `gold-deep`      | gold text on light backgrounds (accessible) |
+| Warm Ivory      | `#F6F0E4` | `ivory`          | page background                             |
+| Light Sage      | `#E5EBDD` | `sage`           | soft section background                     |
+| Dark Forest     | `#173B32` | `forest`         | body text                                   |
+| White           | `#FFFFFF` | `white`          | cards                                       |
 
-Fonts: Cinzel (`font-display`), Cormorant Garamond (`font-serif`), Jost (`font-sans`), Tiro Devanagari Marathi (`font-devanagari`).
-Extra breakpoints: `xs` 480px and `3xl` 1920px, on top of Tailwind's defaults.
+- **Type:** Cinzel (`font-display`, headings), Cormorant Garamond (`font-serif`, accents), Jost (`font-sans`, body), Tiro Devanagari Marathi (`font-devanagari`).
+  Sizes: `text-display`, `text-h1` … `text-h4`, `text-lead`, `text-body`, `text-caption`, `text-label`.
+- **Spacing:** `section-y` / `section-y-sm` or `<Section>`; `<Container size="narrow | content | wide">` (768 / 1280 / 1536px).
+- **Corners:** `rounded-card` (24px), `rounded-panel` (32px), `rounded-full` for buttons.
+- **Breakpoints:** `xs` 480, `sm` 640, `md` 768, `lg` 1024, `xl` 1280 (desktop nav), `2xl` 1536, `3xl` 1920.
+
+## Before going live
+
+Create `.env.local` (or set it in your hosting dashboard):
+
+```
+NEXT_PUBLIC_SITE_URL=https://your-real-domain.com
+```
+
+This is used for canonical URLs, the sitemap and social-media previews.

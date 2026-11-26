@@ -110,3 +110,18 @@ export function Button(props: ButtonProps) {
     </button>
   );
 }
+
+type PresetProps = ButtonProps & {
+  /** dark = on ivory/white/sage backgrounds, light = on emerald/forest backgrounds */
+  tone?: "dark" | "light";
+};
+
+/** Main call to action: emerald on light backgrounds, gold on dark backgrounds. */
+export function PrimaryButton({ tone = "dark", ...props }: PresetProps) {
+  return <Button {...(props as ButtonProps)} variant={tone === "dark" ? "primary" : "gold"} />;
+}
+
+/** Supporting action: outlined emerald on light backgrounds, outlined ivory on dark backgrounds. */
+export function SecondaryButton({ tone = "dark", ...props }: PresetProps) {
+  return <Button {...(props as ButtonProps)} variant={tone === "dark" ? "outline" : "light"} />;
+}

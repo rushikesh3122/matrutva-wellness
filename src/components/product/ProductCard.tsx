@@ -3,15 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Check, Heart, ShoppingBag, Star } from "lucide-react";
 import type { Product } from "@/types/product";
 import { cn, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { useCart } from "@/context/CartContext";
 
 type ProductCardProps = {
   product: Product;
-  /** Called when "Add to cart" is pressed. Wired to the cart in a later stage. */
+  /** Override the default behaviour (adding one unit to the cart) */
   onAddToCart?: (product: Product) => void;
   onToggleWishlist?: (product: Product) => void;
   wishlisted?: boolean;
@@ -28,6 +29,7 @@ export function ProductCard({
   priority = false,
   className,
 }: ProductCardProps) {
+  const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const href = `/shop/${product.slug}`;
   const [primary, secondary] = product.images;
@@ -35,19 +37,20 @@ export function ProductCard({
     product.mrp && product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
 
   function handleAdd() {
-    onAddToCart?.(product);
+    if (onAddToCart) onAddToCart(product);
+    else addItem(product);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
   }
 
   return (
-    <motion.article
+    <m.article
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-3xl border border-gold/20 bg-ivory-light shadow-soft transition-shadow duration-500 hover:shadow-lift",
+        "group relative flex flex-col overflow-hidden rounded-card border border-gold/20 bg-ivory-light shadow-soft transition-shadow duration-500 hover:shadow-lift",
         className,
       )}
     >
@@ -113,7 +116,7 @@ export function ProductCard({
       <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
         {product.rating !== undefined && (
           <div className="flex items-center gap-1.5 text-xs text-forest/70">
-            <div className="flex" aria-label={`Rated ${product.rating} out of 5`}>
+            <div className="flex" role="img" aria-label={`Rated ${product.rating} out of 5`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
@@ -155,7 +158,7 @@ export function ProductCard({
           <div className="flex items-baseline gap-2">
             <span className="font-display text-2xl text-emerald">{formatPrice(product.price)}</span>
             {discount > 0 && product.mrp && (
-              <span className="text-sm text-forest/45 line-through">{formatPrice(product.mrp)}</span>
+              <span className="text-sm text-forest/60 line-through">{formatPrice(product.mrp)}</span>
             )}
           </div>
         </div>
@@ -171,6 +174,6 @@ export function ProductCard({
           {added ? "Added" : "Add to cart"}
         </Button>
       </div>
-    </motion.article>
+    </m.article>
   );
 }

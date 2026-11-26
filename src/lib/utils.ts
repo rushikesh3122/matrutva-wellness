@@ -14,3 +14,8 @@ export function formatPrice(amount: number) {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+/** True when `href` is the current page or one of its sub-pages. */
+export function isActivePath(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+}
