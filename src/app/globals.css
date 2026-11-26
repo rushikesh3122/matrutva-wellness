@@ -6,33 +6,39 @@
    available as a utility (bg-emerald, text-gold, font-display…).
 ---------------------------------------------------------------- */
 @theme {
-  /* Brand colours */
-  --color-emerald: #0F3D2E; /* Deep Green — primary (brand board) */
-  --color-teal: #0E687A; /* Peacock Teal — secondary */
-  --color-gold: #c9a66a; /* Muted Gold — accent */
-  --color-ivory: #f6f0e4; /* Warm Ivory — background */
-  --color-forest: #173b32; /* Dark Forest — body text */
-  --color-sage: #e5ebdd; /* Light Sage — soft section background */
+  /* Brand colours — from the Figma "Matrutva Brand Website" design */
+  --color-emerald: #123324; /* Deep Green — primary ink, buttons, dark sections */
+  --color-teal: #1f8a80; /* Peacock Teal — accents, primary CTA */
+  --color-teal-deep: #176b63; /* Teal for small text on light backgrounds (WCAG AA) */
+  --color-gold: #e7a53a; /* Saffron — numerals, Devanagari, turmeric accent */
+  --color-ivory: #f7f5ef; /* Warm Ivory — page background */
+  --color-forest: #0c2419; /* Body text */
+  --color-sage: #e9ece3; /* Soft section background */
   --color-white: #ffffff;
+  --color-moss: #2c6244; /* Moringa accent */
+  --color-terracotta: #c96f3f; /* Fruit & veg accent */
+  --color-terracotta-deep: #a4532a; /* Terracotta for text and buttons (WCAG AA) */
+  --color-aqua: #37c6b6; /* Highlight on deep green */
 
   /* Supporting tints & shades */
-  --color-emerald-light: #1D5A43;
-  --color-emerald-dark: #082A1F;
-  --color-teal-light: #1b8496;
-  --color-gold-light: #e2c48a;
-  --color-gold-dark: #a8854a;
-  /* Gold for small text on light backgrounds (meets WCAG AA 4.5:1 on ivory/white/sage).
-     Use brand gold (#C9A66A) for lines, icons, large display text and on emerald. */
-  --color-gold-deep: #7d5f28;
-  --color-ivory-dark: #ebe2cf;
-  --color-ivory-light: #fbf8f1;
-  --color-leaf: #2e7d5b; /* Emerald — brand board accent green */
+  --color-emerald-light: #1d4a35;
+  --color-emerald-dark: #0a1f15;
+  --color-teal-light: #37c6b6;
+  --color-gold-light: #f0c27a;
+  --color-gold-dark: #c98a24;
+  /* Gold for small text on light backgrounds (meets WCAG AA 4.5:1 on ivory/white/sage). */
+  --color-gold-deep: #8a5a12;
+  --color-ivory-dark: #ece8dc;
+  --color-ivory-light: #fbfaf6;
+  --color-leaf: #2c6244;
   --color-peacock-blue: #1b2a6b;
 
   /* Typography (variables injected by next/font in layout.tsx) */
-  --font-display: var(--font-cinzel), "Cinzel", Georgia, serif;
-  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-sans: var(--font-jost), "Jost", system-ui, sans-serif;
+  --font-display: var(--font-kalnia), "Kalnia", Georgia, serif;
+  --font-serif: var(--font-kalnia), "Kalnia", Georgia, serif;
+  --font-sans: var(--font-figtree), "Figtree", system-ui, sans-serif;
+  --font-logo: var(--font-cinzel), "Cinzel", Georgia, serif;
+  --font-mono: var(--font-dm-mono), "DM Mono", ui-monospace, monospace;
   --font-devanagari: var(--font-tiro), "Tiro Devanagari Marathi", serif;
 
   /* Type scale — fluid headings, fixed body sizes */
@@ -62,6 +68,7 @@
 
   /* Radii — one consistent family */
   --radius-card: 1.5rem;
+  --radius-figure: 2rem;
   --radius-panel: 2rem;
 
   /* Extra breakpoints (defaults: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem) */
@@ -72,8 +79,8 @@
   --tracking-luxe: 0.35em;
 
   /* Shadows & easing */
-  --shadow-soft: 0 10px 40px -12px rgb(15 61 46 / 0.18);
-  --shadow-lift: 0 24px 60px -20px rgb(15 61 46 / 0.35);
+  --shadow-soft: 0 10px 40px -12px rgb(18 51 36 / 0.12);
+  --shadow-lift: 0 24px 60px -20px rgb(18 51 36 / 0.25);
   --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
 
   --animate-shimmer: shimmer 2.4s linear infinite;
@@ -183,7 +190,7 @@
 
   /* Uppercase spaced label, like "W E L L N E S S" in the wordmark */
   .eyebrow {
-    @apply font-sans text-label font-medium tracking-[0.3em] uppercase;
+    @apply font-mono text-[0.66rem] leading-6 font-normal tracking-[0.3em] uppercase;
   }
 
   /* Gold hairline divider */

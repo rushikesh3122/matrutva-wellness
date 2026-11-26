@@ -3,36 +3,30 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
-import { Menu, Search, ShoppingBag } from "lucide-react";
+import { Menu, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { orderHref } from "@/lib/site";
 import { useCart } from "@/context/CartContext";
 import { BrandLogo } from "@/components/brand/BrandLogo";
-import { AnnouncementBar } from "./AnnouncementBar";
+import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { DesktopNavigation } from "./DesktopNavigation";
 
-// The menu drawer and search panel load only when first opened, keeping the initial page light.
+// The menu drawer loads only when first opened, keeping the initial page light.
 const MobileNavigation = dynamic(() => import("./MobileNavigation").then((m) => m.MobileNavigation), { ssr: false });
-const SearchOverlay = dynamic(() => import("./SearchOverlay").then((m) => m.SearchOverlay), { ssr: false });
 
 const iconBtn =
-  "relative grid size-10 place-items-center rounded-full text-emerald transition-colors duration-300 hover:bg-emerald/5 hover:text-teal";
+  "relative grid size-10 place-items-center rounded-full text-emerald transition-colors duration-300 hover:bg-emerald/5 hover:text-teal-deep";
 
 /**
- * Sticky site header.
- * - below 640px: compact logo, search, cart, menu
- * - 640–1279px: full horizontal logo, search, cart, menu
- * - 1280px+: full logo, desktop navigation, search, cart
+ * Sticky header from the Figma design: wordmark, mono navigation, dark "Order" pill.
+ * Translucent ivory with a blur once the page scrolls.
  */
-export function Header({ showAnnouncement = true }: { showAnnouncement?: boolean }) {
+export function Header() {
   const { count } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  // Mount overlays after first use so their code is fetched on demand
   const [menuUsed, setMenuUsed] = useState(false);
-  const [searchUsed, setSearchUsed] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
-  const closeSearch = useCallback(() => setSearchOpen(false), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -43,34 +37,20 @@ export function Header({ showAnnouncement = true }: { showAnnouncement?: boolean
 
   return (
     <>
-      {showAnnouncement && <AnnouncementBar />}
-
       <header
         className={cn(
-          "sticky top-0 z-40 w-full transition-all duration-500 ease-luxe",
-          scrolled ? "border-b border-gold/25 bg-ivory/85 shadow-soft backdrop-blur-md" : "border-b border-gold/10 bg-ivory",
+          "sticky top-0 z-40 w-full transition-colors duration-500",
+          scrolled ? "border-b border-forest/10 bg-ivory/70 backdrop-blur-md" : "border-b border-transparent bg-ivory",
         )}
       >
-        <div
-          className={cn(
-            "container-luxe flex items-center justify-between gap-6 transition-[height] duration-500 ease-luxe",
-            scrolled ? "h-16" : "h-18 lg:h-22",
-          )}
-        >
-          <BrandLogo variant="compact" className="sm:hidden" />
-          <BrandLogo variant="horizontal" className="hidden sm:inline-flex" />
+        <div className="container-luxe flex h-18 items-center justify-between gap-6 md:h-21">
+          <BrandLogo variant="wordmark" size="sm" />
 
-          <DesktopNavigation className="hidden xl:block" />
+          <DesktopNavigation className="hidden md:block" />
 
-          <div className="flex items-center gap-1">
-            <button type="button" aria-label="Search" onClick={() => {
-                setSearchUsed(true);
-                setSearchOpen(true);
-              }} className={iconBtn}>
-              <Search className="size-[1.15rem]" />
-            </button>
+          <div className="flex items-center gap-1 sm:gap-2">
             <Link href="/cart" aria-label={`Shopping cart, ${count} ${count === 1 ? "item" : "items"}`} className={iconBtn}>
-              <ShoppingBag className="size-[1.15rem]" />
+              <ShoppingBag className="size-[1.15rem]" strokeWidth={1.5} />
               {count > 0 && (
                 <span
                   key={count}
@@ -79,6 +59,13 @@ export function Header({ showAnnouncement = true }: { showAnnouncement?: boolean
                   {count > 99 ? "99+" : count}
                 </span>
               )}
+            </Link>
+            <Link
+              href={orderHref()}
+              className="hidden items-center gap-2 rounded-full bg-emerald px-5 py-2.5 font-mono text-sm tracking-[0.15em] text-ivory uppercase transition-colors hover:bg-teal-deep sm:inline-flex"
+            >
+              <WhatsAppIcon className="size-4" />
+              Order
             </Link>
             <button
               type="button"
@@ -89,16 +76,15 @@ export function Header({ showAnnouncement = true }: { showAnnouncement?: boolean
               aria-label="Open menu"
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
-              className={cn(iconBtn, "xl:hidden")}
+              className={cn(iconBtn, "md:hidden")}
             >
-              <Menu className="size-5" />
+              <Menu className="size-5" strokeWidth={1.5} />
             </button>
           </div>
         </div>
       </header>
 
       {menuUsed && <MobileNavigation open={menuOpen} onClose={closeMenu} />}
-      {searchUsed && <SearchOverlay open={searchOpen} onClose={closeSearch} />}
     </>
   );
 }

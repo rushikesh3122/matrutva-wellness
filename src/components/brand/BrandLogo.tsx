@@ -80,7 +80,7 @@ function Wordmark({
   showTagline?: boolean;
 }) {
   const main = tone === "dark" ? "text-emerald" : "text-ivory";
-  const sub = tone === "dark" ? "text-teal" : "text-gold-light";
+  const sub = tone === "dark" ? "text-teal-deep" : "text-gold-light";
   const nameSize = {
     sm: "text-lg",
     md: "text-xl sm:text-2xl",
@@ -96,7 +96,9 @@ function Wordmark({
 
   return (
     <span className={cn("flex flex-col leading-none", centered ? "items-center" : "items-start")}>
-      <span className={cn("font-display font-semibold tracking-[0.04em]", main, nameSize)}>MATRUTVA</span>
+      <span className={cn("font-logo font-semibold tracking-[0.04em]", main, nameSize)}>MATRUTVA</span>
+      {/* whitespace keeps the accessible name as "MATRUTVA Wellness" (ignored by flex layout) */}
+      {" "}
       {showWellness && (
         <span className={cn("font-sans font-medium uppercase", sub, subSize, centered && "pl-[0.5em]")}>Wellness</span>
       )}

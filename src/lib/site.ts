@@ -6,7 +6,7 @@ export const siteConfig = {
   description:
     "Premium Indian spirulina and plant-based wellness, made with scientific transparency and a mother's care.",
   contact: {
-    email: "hello@matrutvawellness.com",
+    email: "care@matrutvawellness.com",
     phone: "+91 00000 00000",
     hours: "Mon–Sat, 10 AM – 6 PM IST",
     address: "Your registered address, Maharashtra, India",
@@ -17,11 +17,30 @@ export const siteConfig = {
     youtube: "#",
     whatsapp: "#",
   },
+  /**
+   * WhatsApp number for orders, digits only with country code (e.g. "919876543210").
+   * While empty, every "Order" / "Buy" button opens the Contact page instead.
+   */
+  whatsappNumber: "",
 } as const;
+
+/** Link for an order button: a WhatsApp chat with a prefilled message, or the Contact page until a number is set. */
+export function orderHref(message = "Hi Matrutva Wellness, I'd like to place an order."): string {
+  const n = siteConfig.whatsappNumber as string;
+  return n ? `https://wa.me/${n}?text=${encodeURIComponent(message)}` : "/contact";
+}
 
 export type NavItem = { label: string; href: string };
 
+/** Header navigation, as in the Figma design: Products · Promise · Ritual. */
 export const mainNav: NavItem[] = [
+  { label: "Products", href: "/#products" },
+  { label: "Promise", href: "/#promise" },
+  { label: "Ritual", href: "/#ritual" },
+];
+
+/** Full page list, used by the mobile menu. */
+export const allPages: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Shop", href: "/shop" },
   { label: "Discover Spirulina", href: "/discover-spirulina" },
