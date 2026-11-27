@@ -16,5 +16,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly" as const,
     priority: 0.9,
   }));
-  return [...pages, ...productPages];
+  const extra = [{ url: `${siteUrl}/track-order`, changeFrequency: "monthly" as const, priority: 0.3 }];
+  return [...pages, ...productPages, ...extra];
 }

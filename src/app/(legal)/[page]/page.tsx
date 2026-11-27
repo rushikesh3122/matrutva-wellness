@@ -13,7 +13,6 @@ const pages: Record<string, { title: string; description: string }> = {
   "shipping-policy": { title: "Shipping Policy", description: "Delivery areas, timelines and charges." },
   "refund-policy": { title: "Returns & Refunds", description: "Our policy on returns, replacements and refunds." },
   faqs: { title: "Frequently Asked Questions", description: "Answers to common questions about spirulina and your order." },
-  "track-order": { title: "Track Your Order", description: "Order tracking will be available once online ordering opens." },
 };
 
 export function generateStaticParams() {

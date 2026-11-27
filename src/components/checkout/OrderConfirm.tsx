@@ -106,7 +106,16 @@ export function OrderConfirm() {
             </p>
           </div>
         </div>
-        <p className="mt-8 text-sm text-forest/70">
+        {order.saved && (
+          <p className="mt-8 text-sm text-forest/70">
+            Follow your order anytime on{" "}
+            <Link href="/track-order" className="text-teal-deep underline underline-offset-4">
+              Track your order
+            </Link>{" "}
+            with order number {order.number} and your phone number.
+          </p>
+        )}
+        <p className="mt-4 text-sm text-forest/70">
           Something wrong?{" "}
           <Link
             href="/contact"

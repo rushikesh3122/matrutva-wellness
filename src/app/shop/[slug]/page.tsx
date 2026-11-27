@@ -13,7 +13,8 @@ import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { LabelDetails } from "@/components/product/LabelDetails";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { FaqList } from "@/components/ui/FaqList";
-import { PromiseSection, RitualSection } from "@/components/home";
+import { PromiseSection, ReviewsSection, RitualSection } from "@/components/home";
+import { getReviews } from "@/lib/live-reviews";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteUrl } from "@/lib/seo";
 
@@ -44,8 +45,9 @@ export default function Page({ params }: PageProps<"/shop/[slug]">) {
 
 async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "params">) {
   const { slug } = await params;
-  const product = await getLiveProduct(slug);
+  const [product, allReviews] = await Promise.all([getLiveProduct(slug), getReviews()]);
   if (!product) notFound();
+  const reviews = allReviews.filter((r) => !r.product_slug || r.product_slug === product.slug);
   const price = product.price ? formatPrice(product.price) : null;
 
   const productJsonLd = {
@@ -168,6 +170,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
 
       <PromiseSection />
       <RitualSection />
+      <ReviewsSection reviews={reviews} />
 
       {product.faq && (
         <section aria-labelledby="product-faq-title" className="bg-ivory">

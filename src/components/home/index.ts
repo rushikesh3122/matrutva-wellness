@@ -6,3 +6,4 @@ export { PromiseSection } from "./PromiseSection";
 export { RitualSection } from "./RitualSection";
 export { FaqSection } from "./FaqSection";
 export { OrderCta } from "./OrderCta";
+export { ReviewsSection } from "./ReviewsSection";
