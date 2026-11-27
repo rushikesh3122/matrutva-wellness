@@ -5,6 +5,9 @@ import { AlertTriangle } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 import { refreshShop } from "@/app/admin/actions";
 import { cn } from "@/lib/utils";
+import { products as catalogue } from "@/data/products";
+import type { ProductImage } from "@/types/product";
+import { ImagesEditor } from "./ImagesEditor";
 import { btnCls, inputCls, rupees } from "./ui";
 
 type Product = {
@@ -16,6 +19,7 @@ type Product = {
   track_stock: boolean;
   stock: number;
   low_stock_alert: number;
+  images: ProductImage[] | null;
 };
 type Movement = { id: number; product_slug: string; change: number; reason: string; batch: string | null; expiry: string | null; order_number: string | null; created_at: string };
 
@@ -47,7 +51,7 @@ export function ProductsPanel() {
     <div className="space-y-10">
       {error && <p className="text-sm text-terracotta-deep">{error}</p>}
       <p className="text-sm text-forest/70">
-        Changes show on the website within a few minutes. Descriptions and photos are edited in the website code (ask Claude).
+        Changes show on the website as soon as you save. Product descriptions and label text are in the website code (ask Claude).
       </p>
       {products.map((p) => (
         <ProductEditor key={p.slug} product={p} onSaved={load} />
@@ -105,6 +109,17 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
     const { data } = await getSupabase().auth.getSession();
     const ok = await refreshShop(data.session?.access_token ?? "").catch(() => false);
     setMsg(ok ? `${done}. The website is updated.` : `${done}. The website will show it within a few minutes.`);
+  }
+
+  const builtIn = catalogue.find((c) => c.slug === p.slug)?.images ?? [];
+  const usingBuiltIn = !p.images?.length;
+
+  async function saveImages(images: ProductImage[]) {
+    const { error } = await getSupabase().from("products").update({ images, updated_at: new Date().toISOString() }).eq("slug", p.slug);
+    if (error) return error.message;
+    await publish("Photos saved");
+    onSaved();
+    return null;
   }
 
   async function saveDetails() {
@@ -236,6 +251,7 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
           {msg}
         </p>
       )}
+      <ImagesEditor slug={p.slug} name={p.name} initial={usingBuiltIn ? builtIn : p.images!} usingBuiltIn={usingBuiltIn} onSave={saveImages} />
     </section>
   );
 }

@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
   images: {
     // Serve modern, smaller image formats automatically
     formats: ["image/avif", "image/webp"],
+    // Product photos uploaded from /admin (Supabase Storage)
+    remotePatterns: [{ protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" }],
   },
   experimental: {
     // Ship only the icons / animation helpers actually used

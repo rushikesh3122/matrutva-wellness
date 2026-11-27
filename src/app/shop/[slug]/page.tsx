@@ -53,7 +53,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
     "@type": "Product",
     name: `${siteConfig.name} ${product.name}`,
     description: product.description,
-    image: product.images.map((i) => `${siteUrl}${i.src}`),
+    image: product.images.map((i) => (i.src.startsWith("http") ? i.src : `${siteUrl}${i.src}`)),
     brand: { "@type": "Brand", name: siteConfig.name },
     ...(product.price
       ? {
