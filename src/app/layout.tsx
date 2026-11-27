@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Header } from "@/components/layout/Header";
@@ -119,7 +120,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               {children}
             </main>
             <Footer settings={settings} />
-            <MobileShopBar />
+            {/* Reads the URL, so it sits in Suspense: pages that refresh in the background (e.g. a product
+                added in /admin) can then still be prerendered. */}
+            <Suspense fallback={null}>
+              <MobileShopBar />
+            </Suspense>
           </CartProvider>
         </SettingsProvider>
         <JsonLd data={organizationJsonLd(settings)} />
