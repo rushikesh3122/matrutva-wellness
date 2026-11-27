@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
-import { getSupabase } from "@/lib/supabase";
+import { listOrders, updateOrder } from "@/backend/admin";
 import { cn } from "@/lib/utils";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { btnCls, ghostCls, inputCls, rupees } from "./ui";
@@ -53,13 +53,9 @@ export function OrdersPanel() {
 
   const load = useCallback(async () => {
     setError("");
-    const { data, error: err } = await getSupabase()
-      .from("orders")
-      .select("*, order_items(name, quantity, price)")
-      .order("created_at", { ascending: false })
-      .limit(200);
-    if (err) setError(err.message);
-    setOrders((data as Order[]) ?? []);
+    const { data, error: err } = await listOrders<Order>();
+    if (err) setError(err);
+    setOrders(data);
   }, []);
 
   useEffect(() => {
@@ -148,12 +144,9 @@ function OrderDetail({ order: o, onSaved }: { order: Order; onSaved: () => void 
   async function save() {
     setBusy(true);
     setMsg("");
-    const { error } = await getSupabase()
-      .from("orders")
-      .update({ status, tracking: tracking || null, admin_notes: notes || null })
-      .eq("id", o.id);
+    const error = await updateOrder(o.id, { status, tracking: tracking || null, admin_notes: notes || null });
     setBusy(false);
-    if (error) return setMsg(error.message);
+    if (error) return setMsg(error);
     setMsg("Saved");
     onSaved();
   }

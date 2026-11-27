@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, Trash2 } from "lucide-react";
-import { getSupabase } from "@/lib/supabase";
+import { uploadProductPhoto } from "@/backend/admin";
 import { cn } from "@/lib/utils";
 import type { ProductImage } from "@/types/product";
 import { btnCls, ghostCls, inputCls } from "./ui";
 
-const BUCKET = "product-images";
 const MAX_BYTES = 5 * 1024 * 1024;
 
 /**
@@ -52,15 +51,12 @@ export function ImagesEditor({
         setMsg(`${file.name} is over 5 MB. Please use a smaller photo.`);
         continue;
       }
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const path = `${slug}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const sb = getSupabase();
-      const { error } = await sb.storage.from(BUCKET).upload(path, file, { cacheControl: "31536000", contentType: file.type });
-      if (error) {
-        setMsg(error.message);
+      const res = await uploadProductPhoto(slug, file);
+      if ("error" in res) {
+        setMsg(res.error);
         continue;
       }
-      added.push({ src: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl, alt: name });
+      added.push({ src: res.url, alt: name });
     }
     setBusy(false);
     if (added.length) {

@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { getSupabase } from "@/lib/supabase";
-import { refreshShop } from "@/app/admin/actions";
+import { getSettingsRow, refreshWebsite, updateSettings } from "@/backend/admin";
 import { cn } from "@/lib/utils";
 import { btnCls, inputCls } from "./ui";
 
@@ -46,14 +45,9 @@ export function SettingsPanel() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    void getSupabase()
-      .from("settings")
-      .select("*")
-      .eq("id", 1)
-      .maybeSingle()
-      .then(({ data, error }) => {
+    void getSettingsRow().then(({ data, error }) => {
         if (error) {
-          setError(error.message.includes("settings") ? "Run supabase/03-store-settings.sql in the Supabase SQL Editor first." : error.message);
+          setError(error.includes("settings") ? "Run supabase/03-store-settings.sql in the Supabase SQL Editor first." : error);
           setF(blank);
           return;
         }
@@ -105,9 +99,7 @@ export function SettingsPanel() {
     if (fssai && !/^\d{14}$/.test(fssai)) return setMsg("FSSAI licence numbers have 14 digits.");
 
     setBusy(true);
-    const { error } = await getSupabase()
-      .from("settings")
-      .update({
+    const error = await updateSettings({
         whatsapp,
         phone: f.phone.trim(),
         email: f.email.trim(),
@@ -125,16 +117,13 @@ export function SettingsPanel() {
         free_shipping_above: free,
         cod_enabled: f.cod_enabled,
         fssai,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", 1);
+    });
     if (error) {
       setBusy(false);
-      return setMsg(error.message);
+      return setMsg(error);
     }
     setF({ ...f, whatsapp, fssai });
-    const { data } = await getSupabase().auth.getSession();
-    const ok = await refreshShop(data.session?.access_token ?? "").catch(() => false);
+    const ok = await refreshWebsite();
     setBusy(false);
     setMsg(ok ? "Saved. The website is updated." : "Saved. The website will show it within a few minutes.");
   }

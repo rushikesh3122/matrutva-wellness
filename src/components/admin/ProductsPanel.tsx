@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
-import { getSupabase } from "@/lib/supabase";
-import { refreshShop } from "@/app/admin/actions";
+import { addProduct, addStockMovement, listProducts, listStockMovements, refreshWebsite, updateProduct } from "@/backend/admin";
 import { cn } from "@/lib/utils";
 import { products as catalogue } from "@/data/products";
 import type { ProductImage } from "@/types/product";
@@ -32,14 +31,10 @@ export function ProductsPanel() {
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
-    const sb = getSupabase();
-    const [p, m] = await Promise.all([
-      sb.from("products").select("*").order("name"),
-      sb.from("stock_movements").select("*").order("created_at", { ascending: false }).limit(30),
-    ]);
-    setError(p.error?.message ?? m.error?.message ?? "");
-    setProducts((p.data as Product[]) ?? []);
-    setMoves((m.data as Movement[]) ?? []);
+    const [p, m] = await Promise.all([listProducts<Product>(), listStockMovements<Movement>(30)]);
+    setError(p.error ?? m.error ?? "");
+    setProducts(p.data);
+    setMoves(m.data);
   }, []);
 
   useEffect(() => {
@@ -109,8 +104,7 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
   const id = p.slug;
 
   async function publish(done: string) {
-    const { data } = await getSupabase().auth.getSession();
-    const ok = await refreshShop(data.session?.access_token ?? "").catch(() => false);
+    const ok = await refreshWebsite();
     setMsg(ok ? `${done}. The website is updated.` : `${done}. The website will show it within a few minutes.`);
   }
 
@@ -118,19 +112,16 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
   const usingBuiltIn = !p.images?.length && builtIn.length > 0;
 
   async function saveImages(images: ProductImage[]) {
-    const { error } = await getSupabase().from("products").update({ images, updated_at: new Date().toISOString() }).eq("slug", p.slug);
-    if (error) return error.message;
+    const error = await updateProduct(p.slug, { images });
+    if (error) return error;
     await publish("Photos saved");
     onSaved();
     return null;
   }
 
   async function saveText(t: ProductDetails) {
-    const { error } = await getSupabase()
-      .from("products")
-      .update({ ...t, name: t.name.trim(), updated_at: new Date().toISOString() })
-      .eq("slug", p.slug);
-    if (error) return error.message.includes("column") ? "Run supabase/04-product-details.sql in Supabase first." : error.message;
+    const error = await updateProduct(p.slug, { ...t, name: t.name.trim() });
+    if (error) return error.includes("column") ? "Run supabase/04-product-details.sql in Supabase first." : error;
     await publish("Product text saved");
     onSaved();
     return null;
@@ -142,12 +133,9 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
     if (!Number.isInteger(price) || price <= 0) return setMsg("Enter a valid price.");
     if (mrp !== null && (!Number.isInteger(mrp) || mrp < price)) return setMsg("MRP must be a whole number, at least the price.");
     setBusy(true);
-    const { error } = await getSupabase()
-      .from("products")
-      .update({ price, mrp, active: f.active, track_stock: f.track, low_stock_alert: Number(f.low) || 0, updated_at: new Date().toISOString() })
-      .eq("slug", p.slug);
+    const error = await updateProduct(p.slug, { price, mrp, active: f.active, track_stock: f.track, low_stock_alert: Number(f.low) || 0 });
     setBusy(false);
-    if (error) return setMsg(error.message);
+    if (error) return setMsg(error);
     await publish("Saved");
     onSaved();
   }
@@ -156,11 +144,9 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
     const change = Number(adj.change);
     if (!Number.isInteger(change) || change === 0) return setMsg("Enter a whole number, e.g. 50 or -2.");
     setBusy(true);
-    const { error } = await getSupabase()
-      .from("stock_movements")
-      .insert({ product_slug: p.slug, change, reason: adj.reason || "Adjustment", batch: adj.batch || null, expiry: adj.expiry || null });
+    const error = await addStockMovement({ product_slug: p.slug, change, reason: adj.reason || "Adjustment", batch: adj.batch || null, expiry: adj.expiry || null });
     setBusy(false);
-    if (error) return setMsg(error.message);
+    if (error) return setMsg(error);
     await publish("Stock updated");
     setAdj({ change: "", reason: "New batch received", batch: "", expiry: "" });
     onSaved();
@@ -295,11 +281,9 @@ function AddProduct({ existing, onAdded }: { existing: string[]; onAdded: () => 
     if (existing.includes(slug)) return setMsg("A product with this name already exists.");
     if (!Number.isInteger(amount) || amount <= 0) return setMsg("Enter a price in whole rupees.");
     setBusy(true);
-    const { error } = await getSupabase()
-      .from("products")
-      .insert({ slug, name: name.trim(), price: amount, active: false, track_stock: true, stock: 0, low_stock_alert: 5, images: [] });
+    const error = await addProduct({ slug, name: name.trim(), price: amount });
     setBusy(false);
-    if (error) return setMsg(error.message);
+    if (error) return setMsg(error);
     setName("");
     setPrice("");
     setOpen(false);
