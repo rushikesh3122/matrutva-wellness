@@ -26,6 +26,14 @@ export const CART_LIMIT = 20;
 /** Most of this product a customer can have in the cart. */
 export const maxFor = (p: { maxQuantity?: number; max?: number }) => Math.min(CART_LIMIT, p.maxQuantity ?? p.max ?? CART_LIMIT);
 
+/** The message shown when a shopper reaches the limit. */
+export function limitMessage(p: { maxQuantity?: number; max?: number }) {
+  const stock = p.maxQuantity ?? p.max;
+  const n = maxFor(p);
+  if (stock !== undefined && stock <= CART_LIMIT) return n === 1 ? "We only have 1 piece left at the moment" : `We only have ${n} pieces left at the moment`;
+  return `You can order up to ${CART_LIMIT} at a time`;
+}
+
 type CartContextValue = {
   items: CartItem[];
   /** False until the saved cart has been read from localStorage. */
@@ -39,6 +47,9 @@ type CartContextValue = {
   /** Records the stock left for an item and brings its quantity down to it. */
   setLimit: (id: string, max: number | undefined) => void;
   clear: () => void;
+  /** Short message shown as a toast (e.g. the stock limit); changes id each time. */
+  notice: { id: number; text: string } | null;
+  notify: (text: string) => void;
 };
 
 const STORAGE_KEY = "matrutva-cart-v2";
@@ -47,6 +58,8 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [notice, setNotice] = useState<{ id: number; text: string } | null>(null);
+  const notify = useCallback((text: string) => setNotice({ id: Date.now(), text }), []);
 
   // Read the saved cart after mount (avoids server/client mismatch).
   useEffect(() => {
@@ -69,6 +82,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const max = maxFor(product);
       const inCart = items.find((i) => i.id === product.id)?.quantity ?? 0;
       const added = Math.max(0, Math.min(quantity, max - inCart));
+      if (added < quantity) notify(limitMessage(product));
       if (added === 0) return 0;
       setItems((prev) => {
       const existing = prev.find((i) => i.id === product.id);
@@ -90,16 +104,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
       return added;
     },
-    [items],
+    [items, notify],
   );
 
   const removeItem = useCallback((id: string) => setItems((prev) => prev.filter((i) => i.id !== id)), []);
 
-  const updateQuantity = useCallback((id: string, quantity: number) => {
-    setItems((prev) =>
-      quantity <= 0 ? prev.filter((i) => i.id !== id) : prev.map((i) => (i.id === id ? { ...i, quantity: Math.min(quantity, maxFor(i)) } : i)),
-    );
-  }, []);
+  const updateQuantity = useCallback(
+    (id: string, quantity: number) => {
+      const item = items.find((i) => i.id === id);
+      if (item && quantity > maxFor(item)) notify(limitMessage(item));
+      setItems((prev) =>
+        quantity <= 0 ? prev.filter((i) => i.id !== id) : prev.map((i) => (i.id === id ? { ...i, quantity: Math.min(quantity, maxFor(i)) } : i)),
+      );
+    },
+    [items, notify],
+  );
 
   const setLimit = useCallback((id: string, max: number | undefined) => {
     setItems((prev) =>
@@ -122,8 +141,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       setLimit,
       clear,
+      notice,
+      notify,
     }),
-    [items, loaded, addItem, removeItem, updateQuantity, setLimit, clear],
+    [items, loaded, addItem, removeItem, updateQuantity, setLimit, clear, notice, notify],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
