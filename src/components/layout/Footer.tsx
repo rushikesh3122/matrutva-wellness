@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowUpRight, Clock, Mail, MapPin } from "lucide-react";
-import { footerNav, legalNav, orderHref, siteConfig } from "@/lib/site";
+import { ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
+import { footerNav, legalNav, siteConfig } from "@/lib/site";
+import { whatsappHref, type StoreSettings } from "@/lib/settings";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { FacebookIcon, InstagramIcon, WhatsAppIcon, YoutubeIcon } from "@/components/ui/SocialIcons";
 
@@ -10,24 +11,20 @@ async function CopyrightYear() {
   return <>{new Date().getFullYear()}</>;
 }
 
-/** A link counts as set once it is no longer the "#" placeholder. */
-const isSet = (href: string) => href !== "" && href !== "#";
-
 const linkClass = "inline-block py-1 text-ivory/75 transition-colors hover:text-ivory";
 
 /**
  * Site footer: brand column with an order button, three link columns, contact
- * details, then a disclaimer and a legal row. Placeholder contact details and
- * social links stay hidden until they are filled in `src/lib/site.ts`.
+ * details, then a disclaimer and a legal row. Contact details and social links
+ * come from /admin → Settings and stay hidden while empty.
  */
-export function Footer() {
-  const { contact, social } = siteConfig;
+export function Footer({ settings: s }: { settings: StoreSettings }) {
+  const wa = whatsappHref(s);
   const socials = [
-    { label: "Instagram", href: social.instagram, Icon: InstagramIcon },
-    { label: "Facebook", href: social.facebook, Icon: FacebookIcon },
-    { label: "YouTube", href: social.youtube, Icon: YoutubeIcon },
-  ].filter((s) => isSet(s.href));
-  const hasAddress = !contact.address.startsWith("Your ");
+    { label: "Instagram", href: s.instagram, Icon: InstagramIcon },
+    { label: "Facebook", href: s.facebook, Icon: FacebookIcon },
+    { label: "YouTube", href: s.youtube, Icon: YoutubeIcon },
+  ].filter((x) => x.href.startsWith("http"));
 
   return (
     <footer className="mt-auto bg-emerald text-ivory">
@@ -39,10 +36,10 @@ export function Footer() {
             Pure spirulina, grown with care and packed without fillers. Nourishment with a mother&apos;s care.
           </p>
           <Link
-            href={siteConfig.whatsappNumber ? orderHref() : "/shop/spirulina-capsules"}
+            href={wa ?? "/shop/spirulina-capsules"}
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-medium text-emerald transition-colors hover:bg-gold-light"
           >
-            {siteConfig.whatsappNumber ? (
+            {wa ? (
               <>
                 <WhatsAppIcon className="size-4" />
                 Order on WhatsApp
@@ -94,18 +91,26 @@ export function Footer() {
           <ul className="mt-5 space-y-4 text-sm text-ivory/75">
             <li className="flex gap-3">
               <Mail className="mt-0.5 size-4 shrink-0 text-ivory/60" strokeWidth={1.5} aria-hidden />
-              <a href={`mailto:${contact.email}`} className="break-all transition-colors hover:text-ivory">
-                {contact.email}
+              <a href={`mailto:${s.email}`} className="break-all transition-colors hover:text-ivory">
+                {s.email}
               </a>
             </li>
+            {s.phone && (
+              <li className="flex gap-3">
+                <Phone className="mt-0.5 size-4 shrink-0 text-ivory/60" strokeWidth={1.5} aria-hidden />
+                <a href={`tel:${s.phone.replace(/[^\d+]/g, "")}`} className="transition-colors hover:text-ivory">
+                  {s.phone}
+                </a>
+              </li>
+            )}
             <li className="flex gap-3">
               <Clock className="mt-0.5 size-4 shrink-0 text-ivory/60" strokeWidth={1.5} aria-hidden />
-              <span>{contact.hours}</span>
+              <span>{s.hours}</span>
             </li>
-            {hasAddress && (
+            {s.address && (
               <li className="flex gap-3">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-ivory/60" strokeWidth={1.5} aria-hidden />
-                <span>{contact.address}</span>
+                <span>{s.address}</span>
               </li>
             )}
           </ul>
@@ -133,6 +138,7 @@ export function Footer() {
         <div className="container-luxe flex flex-col gap-3 py-5 text-xs text-ivory/70 md:flex-row md:items-center md:justify-between">
           <p>
             © <CopyrightYear /> {siteConfig.name}. All rights reserved. · Made in India
+            {s.fssai && <> · FSSAI Lic. No. {s.fssai}</>}
           </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-1" aria-label="Legal">
             {legalNav.map((l) => (

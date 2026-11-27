@@ -9,6 +9,7 @@ import { Mail, Phone, X } from "lucide-react";
 import { allPages, siteConfig } from "@/lib/site";
 import { cn, isActivePath } from "@/lib/utils";
 import { useLockBody } from "@/hooks/useLockBody";
+import { useSettings } from "@/context/SettingsContext";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { FeatherWave } from "@/components/brand/FeatherWave";
 
@@ -17,6 +18,7 @@ type MobileNavigationProps = { open: boolean; onClose: () => void };
 /** Slide-in navigation drawer for mobile and tablet (below 1280px). */
 export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
   const pathname = usePathname();
+  const settings = useSettings();
   useLockBody(open, onClose);
 
   // Framer Motion is only needed here, so it loads with the menu, not with every page.
@@ -114,12 +116,14 @@ export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
                 <p>{siteConfig.taglineMeaning}</p>
                 <p className="flex items-center gap-2 pt-2">
                   <Mail className="size-4 text-teal" />{" "}
-                  {siteConfig.contact.email}
+                  {settings.email}
                 </p>
-                <p className="flex items-center gap-2">
-                  <Phone className="size-4 text-teal" />{" "}
-                  {siteConfig.contact.phone}
-                </p>
+                {settings.phone && (
+                  <p className="flex items-center gap-2">
+                    <Phone className="size-4 text-teal" />{" "}
+                    {settings.phone}
+                  </p>
+                )}
                 <FeatherWave className="mt-4 h-10" />
               </div>
             </m.aside>

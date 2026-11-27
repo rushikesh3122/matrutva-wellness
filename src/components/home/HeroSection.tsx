@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { hero } from "@/content/home";
-import { orderHref, siteConfig } from "@/lib/site";
+import { whatsappHref } from "@/lib/settings";
+import { getSettings } from "@/lib/live-settings";
 
 /** Hero from the Figma design: mono eyebrow, Kalnia headline with a teal last line, the white bottle on the right. */
-export function HeroSection() {
-  const ask = orderHref("Hi Matrutva Wellness, I have a question about your products.");
+export async function HeroSection() {
+  const wa = whatsappHref(await getSettings(), "Hi Matrutva Wellness, I have a question about your products.");
   return (
     <section aria-labelledby="hero-title" className="bg-ivory">
       <div className="container-luxe grid items-center gap-12 pt-10 pb-16 md:grid-cols-[1.1fr_1fr] md:gap-8 md:pt-16 lg:pt-20 lg:pb-24">
@@ -30,8 +31,8 @@ export function HeroSection() {
             >
               {hero.primaryCta.label} <span aria-hidden>→</span>
             </Link>
-            <Link href={ask} className="eyebrow text-[0.7rem] text-forest/70 transition-colors hover:text-teal-deep">
-              {siteConfig.whatsappNumber ? hero.secondaryCta.label : "Ask a question"}
+            <Link href={wa ?? "/contact"} className="eyebrow text-[0.7rem] text-forest/70 transition-colors hover:text-teal-deep">
+              {wa ? hero.secondaryCta.label : "Ask a question"}
             </Link>
           </div>
         </div>

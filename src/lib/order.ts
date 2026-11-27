@@ -1,5 +1,6 @@
 import type { CartItem } from "@/context/CartContext";
 import { siteConfig } from "@/lib/site";
+import { whatsappHref, type StoreSettings } from "@/lib/settings";
 import { formatPrice } from "@/lib/utils";
 
 export type CheckoutDetails = {
@@ -23,8 +24,18 @@ export type PlacedOrder = {
   details: CheckoutDetails;
   /** true once the order is saved in the admin dashboard */
   saved?: boolean;
-  /** total confirmed by the server (prices from the database) */
+  /** total confirmed by the server (prices from the database), shipping included */
   total?: number;
+  /** shipping in ₹ (0 = free); null/undefined = confirmed with the customer */
+  shipping?: number | null;
+  /** how the customer will pay */
+  payment?: PaymentMethod;
+};
+
+export type PaymentMethod = "prepaid" | "cod";
+export const paymentLabel: Record<PaymentMethod, string> = {
+  prepaid: "Pay before dispatch (UPI / bank transfer)",
+  cod: "Cash on delivery",
 };
 
 /**
@@ -35,7 +46,8 @@ export type PlacedOrder = {
 export async function saveOrder(
   items: CartItem[],
   d: CheckoutDetails,
-): Promise<{ number: string; total: number } | { error: string } | null> {
+  payment: PaymentMethod = "prepaid",
+): Promise<{ number: string; total: number; shipping: number } | { error: string } | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return null;
@@ -56,13 +68,14 @@ export async function saveOrder(
           pincode: d.pincode,
           gstin: d.gstin,
           notes: d.notes,
+          payment,
         },
         items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
       }),
       signal: AbortSignal.timeout(10000),
     });
-    const body = (await res.json().catch(() => null)) as { number?: string; total?: number; message?: string } | null;
-    if (res.ok && body?.number) return { number: body.number, total: body.total ?? 0 };
+    const body = (await res.json().catch(() => null)) as { number?: string; total?: number; shipping?: number; message?: string } | null;
+    if (res.ok && body?.number) return { number: body.number, total: body.total ?? 0, shipping: body.shipping ?? 0 };
     // A message raised by place_order (e.g. "Only 3 left of …") is shown to the customer.
     if (res.status === 400 && body?.message) return { error: body.message };
     return null;
@@ -95,19 +108,28 @@ export function orderMessage(order: PlacedOrder) {
   ].filter(Boolean);
   return [
     `Hi ${siteConfig.name}, I'd like to place this order.`,
-    [`Order: ${order.number}`, ...items, `Subtotal: ${formatPrice(order.total ?? subtotal)} (shipping to be confirmed)`].join("\n"),
+    [
+      `Order: ${order.number}`,
+      ...items,
+      order.shipping == null
+        ? `Subtotal: ${formatPrice(subtotal)} (shipping to be confirmed)`
+        : `Subtotal: ${formatPrice(subtotal)}\nShipping: ${order.shipping === 0 ? "Free" : formatPrice(order.shipping)}\nTotal: ${formatPrice(order.total ?? subtotal + order.shipping)}`,
+      order.payment ? `Payment: ${paymentLabel[order.payment]}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n"),
     customer.join("\n"),
   ].join("\n\n");
 }
 
 /** Where to send the order: WhatsApp once a number is set, otherwise email. */
-export function sendOrderHref(order: PlacedOrder) {
+export function sendOrderHref(order: PlacedOrder, s: StoreSettings) {
   const text = orderMessage(order);
-  const n = siteConfig.whatsappNumber as string;
-  if (n) return { channel: "WhatsApp" as const, href: `https://wa.me/${n}?text=${encodeURIComponent(text)}` };
+  const wa = whatsappHref(s, text);
+  if (wa) return { channel: "WhatsApp" as const, href: wa };
   return {
     channel: "email" as const,
-    href: `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(`New order ${order.number}`)}&body=${encodeURIComponent(text)}`,
+    href: `mailto:${s.email}?subject=${encodeURIComponent(`New order ${order.number}`)}&body=${encodeURIComponent(text)}`,
   };
 }
 

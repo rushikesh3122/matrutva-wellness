@@ -4,21 +4,25 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { CartItem } from "@/context/CartContext";
-import { formatPrice } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import { shippingFor } from "@/lib/settings";
+import { useSettings } from "@/context/SettingsContext";
 
 /**
  * Order summary card (cart, checkout and confirmation).
- * Shipping is not priced on the site yet: it is confirmed with the customer on WhatsApp.
+ * Shipping comes from /admin → Settings; while it isn't set, it is "confirmed with you".
  */
 export function OrderSummary({
   items,
   title = "Order summary",
   showItems = false,
   editLink = false,
+  shipping,
   children,
   className,
 }: {
+  /** Shipping already fixed for a placed order. Leave out to work it out from the settings. */
+  shipping?: number | null;
   items: CartItem[];
   title?: string;
   showItems?: boolean;
@@ -26,7 +30,10 @@ export function OrderSummary({
   children?: ReactNode;
   className?: string;
 }) {
+  const settings = useSettings();
   const subtotal = items.reduce((n, i) => n + (i.price ?? 0) * i.quantity, 0);
+  const ship = shipping !== undefined ? shipping : shippingFor(settings, subtotal);
+  const toFree = shipping === undefined && ship && settings.freeShippingAbove ? settings.freeShippingAbove - subtotal : 0;
   return (
     <section aria-label={title} className={cn("rounded-figure border border-forest/10 bg-sage/60 p-6 sm:p-8", className)}>
       <div className="flex items-baseline justify-between gap-4">
@@ -62,13 +69,16 @@ export function OrderSummary({
         </div>
         <div className="flex justify-between gap-6 py-3">
           <dt className="text-forest/75">Shipping</dt>
-          <dd className="text-right text-forest/75">Confirmed with you</dd>
+          <dd className={cn("text-right", ship === null ? "text-forest/75" : "text-forest")}>
+            {ship === null ? "Confirmed with you" : ship === 0 ? "Free" : formatPrice(ship)}
+          </dd>
         </div>
         <div className="flex items-baseline justify-between py-4">
           <dt className="font-medium text-emerald">Total</dt>
-          <dd className="font-display text-2xl text-emerald">{formatPrice(subtotal)}</dd>
+          <dd className="font-display text-2xl text-emerald">{formatPrice(subtotal + (ship ?? 0))}</dd>
         </div>
       </dl>
+      {toFree > 0 && <p className="text-sm text-teal-deep">Add {formatPrice(toFree)} more for free shipping.</p>}
       {children}
     </section>
   );

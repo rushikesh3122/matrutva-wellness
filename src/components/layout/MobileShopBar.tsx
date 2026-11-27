@@ -3,19 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mail, ShoppingBag, Store } from "lucide-react";
-import { orderHref, siteConfig } from "@/lib/site";
+import { whatsappHref } from "@/lib/settings";
+import { useSettings } from "@/context/SettingsContext";
 import { useCart } from "@/context/CartContext";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { cn } from "@/lib/utils";
 
 /**
  * Sticky bottom bar on phones: Shop, Cart and a contact shortcut.
- * Shows WhatsApp once siteConfig.whatsappNumber is set, otherwise the Contact page.
+ * Shows WhatsApp once a number is set in /admin → Settings, otherwise the Contact page.
  */
 export function MobileShopBar() {
   const pathname = usePathname();
   const { count } = useCart();
-  const hasWhatsApp = Boolean(siteConfig.whatsappNumber);
+  const wa = whatsappHref(useSettings());
   // Product pages show their own sticky "Add to cart" bar; the checkout steps need no shop shortcuts.
   if (pathname.startsWith("/shop/") || pathname === "/cart" || pathname.startsWith("/checkout") || pathname.startsWith("/admin")) return null;
 
@@ -26,8 +27,8 @@ export function MobileShopBar() {
       label: count > 0 ? `Cart (${count})` : "Cart",
       icon: <ShoppingBag className="size-5" strokeWidth={1.5} />,
     },
-    hasWhatsApp
-      ? { href: orderHref(), label: "WhatsApp", icon: <WhatsAppIcon className="size-5" />, external: true }
+    wa
+      ? { href: wa, label: "WhatsApp", icon: <WhatsAppIcon className="size-5" />, external: true }
       : { href: "/contact", label: "Contact", icon: <Mail className="size-5" strokeWidth={1.5} /> },
   ];
 

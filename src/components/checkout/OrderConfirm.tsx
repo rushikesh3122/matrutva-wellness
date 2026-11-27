@@ -7,11 +7,13 @@ import { LAST_ORDER_KEY, sendOrderHref, type PlacedOrder } from "@/lib/order";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { PrimaryButton } from "@/components/ui/Button";
 import { OrderSummary } from "./OrderSummary";
+import { useSettings } from "@/context/SettingsContext";
 
 /** Step 3: the order is ready; the customer sends it to us (WhatsApp, or email until a number is set). */
 export function OrderConfirm() {
   const [order, setOrder] = useState<PlacedOrder | null | undefined>(undefined);
   const [sent, setSent] = useState(false);
+  const settings = useSettings();
 
   useEffect(() => {
     try {
@@ -44,7 +46,7 @@ export function OrderConfirm() {
     );
   }
 
-  const { channel, href } = sendOrderHref(order);
+  const { channel, href } = sendOrderHref(order, settings);
   const d = order.details;
 
   return (
@@ -56,7 +58,7 @@ export function OrderConfirm() {
         </h2>
         <p className="mt-4 max-w-lg leading-relaxed text-forest/75">
           {order.saved
-            ? `We'll contact you on ${d.phone} to confirm shipping and payment, usually within working hours.${channel === "WhatsApp" ? " For a faster reply, you can also send it to us on WhatsApp." : ""}`
+            ? `We'll contact you on ${d.phone} to confirm ${order.shipping == null ? "shipping and payment" : order.payment === "cod" ? "delivery" : "your order and share payment details"}, usually within working hours.${channel === "WhatsApp" ? " For a faster reply, you can also send it to us on WhatsApp." : ""}`
             : channel === "WhatsApp"
               ? "Tap the button to send your order on WhatsApp. We reply to confirm stock, shipping and payment, usually within working hours."
               : "Tap the button to email your order to us. We reply to confirm stock, shipping and payment, usually within working hours."}
@@ -115,7 +117,7 @@ export function OrderConfirm() {
           with your order number.
         </p>
       </div>
-      <OrderSummary items={order.items} title="Your order" showItems />
+      <OrderSummary items={order.items} title="Your order" showItems shipping={order.shipping} />
     </div>
   );
 }

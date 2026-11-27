@@ -75,7 +75,8 @@ src/
   context/CartContext.tsx      front-end cart (saved in the browser, no payment gateway)
   data/products.ts             sample product data
   hooks/useLockBody.ts         scroll lock + Escape key for drawers
-  lib/site.ts                  brand info, navigation, footer links, announcements
+  lib/site.ts                  brand info, navigation, footer links
+  lib/settings.ts              store settings (contact, WhatsApp, shipping), edited in /admin → Settings
   lib/seo.ts                   site URL + structured data
   lib/utils.ts                 cn(), formatPrice(), isActivePath()
   types/product.ts             Product type

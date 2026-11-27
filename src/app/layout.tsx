@@ -5,6 +5,9 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileShopBar } from "@/components/layout/MobileShopBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CartProvider } from "@/context/CartContext";
+import { SettingsProvider } from "@/context/SettingsContext";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { getSettings } from "@/lib/live-settings";
 import { siteConfig } from "@/lib/site";
 import { organizationJsonLd, siteUrl } from "@/lib/seo";
 import "./globals.css";
@@ -94,7 +97,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const settings = await getSettings();
   return (
     <html
       lang="en-IN"
@@ -107,15 +111,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <CartProvider>
-          <Header />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <MobileShopBar />
-        </CartProvider>
-        <JsonLd data={organizationJsonLd()} />
+        <SettingsProvider value={settings}>
+          <CartProvider>
+            {settings.announcements.length > 0 && <AnnouncementBar messages={settings.announcements} />}
+            <Header />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <Footer settings={settings} />
+            <MobileShopBar />
+          </CartProvider>
+        </SettingsProvider>
+        <JsonLd data={organizationJsonLd(settings)} />
       </body>
     </html>
   );

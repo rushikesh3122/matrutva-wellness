@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { announcements as defaultMessages, siteConfig } from "@/lib/site";
+import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 type AnnouncementBarProps = {
-  messages?: string[];
+  messages: string[];
   /** Milliseconds each message stays visible */
   interval?: number;
   className?: string;
 };
 
-/** Thin emerald strip above the header with gently rotating messages (CSS animation, no JS library). */
-export function AnnouncementBar({ messages = defaultMessages, interval = 4500, className }: AnnouncementBarProps) {
+/** Thin emerald strip above the header with gently rotating messages, set in /admin → Settings. */
+export function AnnouncementBar({ messages, interval = 4500, className }: AnnouncementBarProps) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {

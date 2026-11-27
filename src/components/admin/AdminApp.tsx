@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { btnCls, ghostCls, inputCls } from "./ui";
 import { OrdersPanel } from "./OrdersPanel";
 import { ProductsPanel } from "./ProductsPanel";
+import { SettingsPanel } from "./SettingsPanel";
 
 type Gate = "loading" | "signed-out" | "not-admin" | "admin";
 
@@ -15,7 +16,7 @@ type Gate = "loading" | "signed-out" | "not-admin" | "admin";
 export function AdminApp() {
   const [gate, setGate] = useState<Gate>("loading");
   const [session, setSession] = useState<Session | null>(null);
-  const [tab, setTab] = useState<"orders" | "products">("orders");
+  const [tab, setTab] = useState<"orders" | "products" | "settings">("orders");
 
   useEffect(() => {
     if (!supabaseConfigured) return;
@@ -66,7 +67,7 @@ export function AdminApp() {
         </div>
       </div>
       <div role="tablist" aria-label="Dashboard sections" className="mt-8 flex gap-2 border-b border-forest/10">
-        {(["orders", "products"] as const).map((t) => (
+        {(["orders", "products", "settings"] as const).map((t) => (
           <button
             key={t}
             role="tab"
@@ -78,11 +79,11 @@ export function AdminApp() {
               tab === t ? "border-teal-deep text-emerald" : "border-transparent text-forest/70 hover:text-emerald",
             )}
           >
-            {t === "products" ? "Products & stock" : "Orders"}
+            {t === "products" ? "Products & stock" : t === "settings" ? "Settings" : "Orders"}
           </button>
         ))}
       </div>
-      <div className="mt-8">{tab === "orders" ? <OrdersPanel /> : <ProductsPanel />}</div>
+      <div className="mt-8">{tab === "orders" ? <OrdersPanel /> : tab === "products" ? <ProductsPanel /> : <SettingsPanel />}</div>
     </div>
   );
 }

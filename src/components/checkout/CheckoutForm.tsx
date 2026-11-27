@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatPrice, cn } from "@/lib/utils";
-import { indianStates, LAST_ORDER_KEY, newOrderNumber, saveOrder, type CheckoutDetails, type PlacedOrder } from "@/lib/order";
+import { indianStates, LAST_ORDER_KEY, newOrderNumber, paymentLabel, saveOrder, type CheckoutDetails, type PaymentMethod, type PlacedOrder } from "@/lib/order";
+import { shippingFor } from "@/lib/settings";
+import { useSettings } from "@/context/SettingsContext";
 import { OrderSummary } from "./OrderSummary";
 
 const DETAILS_KEY = "matrutva-checkout-details";
@@ -79,6 +81,10 @@ function Field({
 export function CheckoutForm() {
   const router = useRouter();
   const { items, ready, subtotal, clear } = useCart();
+  const settings = useSettings();
+  const ship = shippingFor(settings, subtotal);
+  const [payment, setPayment] = useState<PaymentMethod>("prepaid");
+  const pay: PaymentMethod = settings.cod ? payment : "prepaid";
   const [d, setD] = useState<CheckoutDetails>(empty);
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -128,7 +134,7 @@ export function CheckoutForm() {
     setSubmitting(true);
     setServerError("");
     const details = { ...d, gstin: d.gstin.toUpperCase(), phone: d.phone.replace(/\D/g, "").replace(/^91(?=\d{10}$)/, "") };
-    const saved = await saveOrder(items, details);
+    const saved = await saveOrder(items, details, pay);
     if (saved && "error" in saved) {
       setServerError(saved.error);
       setSubmitting(false);
@@ -140,7 +146,9 @@ export function CheckoutForm() {
       items,
       details,
       saved: Boolean(saved),
-      total: saved?.total,
+      total: saved ? saved.total : subtotal + (ship ?? 0),
+      shipping: saved ? (ship === null ? null : saved.shipping) : ship,
+      payment: pay,
     };
     try {
       window.localStorage.setItem(DETAILS_KEY, JSON.stringify({ ...details, notes: "" }));
@@ -203,6 +211,25 @@ export function CheckoutForm() {
             <textarea {...a11y("notes")} rows={3} className={cn(input, "h-auto py-3")} placeholder="Delivery instructions, preferred time to call, etc." />
           </Field>
         </div>
+        {settings.cod && (
+          <fieldset className="mt-8">
+            <legend className="font-display text-xl text-emerald">Payment</legend>
+            <div className="mt-4 grid gap-3">
+              {(["prepaid", "cod"] as const).map((m) => (
+                <label
+                  key={m}
+                  className={cn(
+                    "flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 text-sm transition-colors",
+                    payment === m ? "border-teal-deep bg-teal/5" : "border-forest/20 hover:border-forest/40",
+                  )}
+                >
+                  <input type="radio" name="payment" value={m} checked={payment === m} onChange={() => setPayment(m)} className="size-5 accent-teal-deep" />
+                  {paymentLabel[m]}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
       </div>
 
       <OrderSummary items={items} title="Your order" showItems editLink className="lg:sticky lg:top-28">
@@ -254,10 +281,12 @@ export function CheckoutForm() {
           disabled={submitting}
           className="mt-5 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-teal-deep px-6 font-medium text-ivory transition-colors hover:bg-emerald disabled:opacity-60"
         >
-          {submitting ? "Placing order…" : <>Place order · {formatPrice(subtotal)}</>}
+          {submitting ? "Placing order…" : <>Place order · {formatPrice(subtotal + (ship ?? 0))}</>}
           <ArrowRight className="size-4" aria-hidden />
         </button>
-        <p className="mt-3 text-center text-xs text-forest/70">Next: send your order to us. We confirm shipping and payment with you.</p>
+        <p className="mt-3 text-center text-xs text-forest/70">
+          {ship === null ? "We confirm shipping and payment with you." : pay === "cod" ? "Pay in cash when your order arrives." : "We confirm your order and send payment details."}
+        </p>
       </OrderSummary>
     </form>
   );

@@ -1,34 +1,11 @@
-/** Brand-wide constants and navigation, kept in one place. */
+/** Brand-wide constants and navigation. Contact details, WhatsApp and shipping are in /admin → Settings (src/lib/settings.ts). */
 export const siteConfig = {
   name: "Matrutva Wellness",
   tagline: "मातृवत् पोषणम्",
   taglineMeaning: "Nourishment with a Mother's Care",
   description:
     "Premium Indian spirulina and plant-based wellness, made with scientific transparency and a mother's care.",
-  contact: {
-    email: "care@matrutvawellness.com",
-    phone: "+91 00000 00000",
-    hours: "Mon–Sat, 10 AM – 6 PM IST",
-    address: "Your registered address, Maharashtra, India",
-  },
-  social: {
-    instagram: "#",
-    facebook: "#",
-    youtube: "#",
-    whatsapp: "#",
-  },
-  /**
-   * WhatsApp number for orders, digits only with country code (e.g. "919876543210").
-   * While empty, every "Order" / "Buy" button opens the Contact page instead.
-   */
-  whatsappNumber: "",
 } as const;
-
-/** Link for an order button: a WhatsApp chat with a prefilled message, or the Contact page until a number is set. */
-export function orderHref(message = "Hi Matrutva Wellness, I'd like to place an order."): string {
-  const n = siteConfig.whatsappNumber as string;
-  return n ? `https://wa.me/${n}?text=${encodeURIComponent(message)}` : "/contact";
-}
 
 export type NavItem = { label: string; href: string };
 
@@ -50,14 +27,6 @@ export const allPages: NavItem[] = [
   { label: "Quality", href: "/quality" },
   { label: "Journal", href: "/journal" },
   { label: "Contact", href: "/contact" },
-];
-
-/** Rotating messages in the announcement bar — edit, add or remove freely. */
-export const announcements: string[] = [
-  "Discover a more natural approach to everyday wellness",
-  "Nourishment with a Mother's Care",
-  // Optional — uncomment once your shipping policy is final:
-  // "Free shipping across India on orders above ₹___",
 ];
 
 /** Footer link columns, grouped the way shoppers look for them. */
