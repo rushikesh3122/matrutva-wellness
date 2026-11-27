@@ -20,6 +20,7 @@ export async function refreshShop(accessToken: string): Promise<boolean> {
     if (!res.ok || (await res.json()) !== true) return false;
     updateTag("products");
     updateTag("settings");
+    updateTag("reviews");
     return true;
   } catch {
     return false;

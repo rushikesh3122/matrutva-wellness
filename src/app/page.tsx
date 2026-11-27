@@ -6,9 +6,11 @@ import {
   OrderCta,
   ProductStory,
   PromiseSection,
+  ReviewsSection,
   RitualSection,
   StatsStrip,
 } from "@/components/home";
+import { getReviews } from "@/lib/live-reviews";
 import { getLiveProducts } from "@/lib/live-products";
 import { siteConfig } from "@/lib/site";
 
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
 
 /** Homepage in the Figma style, focused on our one product: Spirulina Capsules. */
 export default async function HomePage() {
-  const [spirulina] = await getLiveProducts();
+  const [[spirulina], reviews] = await Promise.all([getLiveProducts(), getReviews()]);
   return (
     <>
       <HeroSection />
@@ -32,6 +34,7 @@ export default async function HomePage() {
       <InsideSection product={spirulina} />
       <PromiseSection />
       <RitualSection />
+      <ReviewsSection reviews={reviews} />
       {spirulina.faq && <FaqSection items={spirulina.faq} />}
       <OrderCta />
     </>
