@@ -1,5 +1,6 @@
 "use client";
 
+import { LaunchingSoonNotice, WhenOpen } from "@/components/product/ComingSoon";
 import Image from "next/image";
 import Link from "next/link";
 import { HandHeart, Leaf, MessageCircleHeart, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
@@ -115,12 +116,14 @@ export function CartSummary() {
               : `Inclusive of taxes${ship === 0 ? " and free shipping" : `, with ${formatPrice(ship)} shipping`}.`}
           </p>
           {toFree > 0 && <p className="text-sm font-medium text-teal-deep">Add {formatPrice(toFree)} more for free shipping.</p>}
+          <WhenOpen fallback={<LaunchingSoonNotice />}>
           <Link
             href="/checkout"
             className="mt-2 inline-flex h-14 w-full items-center justify-center rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald"
           >
             Check out · {formatPrice(total)}
           </Link>
+          </WhenOpen>
         </div>
       </div>
     </div>

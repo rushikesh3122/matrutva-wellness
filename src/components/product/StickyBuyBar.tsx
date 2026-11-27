@@ -7,6 +7,7 @@ import { Check, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import { cn, formatPrice } from "@/lib/utils";
+import { NotifyMeLink, useComingSoon } from "./ComingSoon";
 
 /**
  * Bottom "Add to cart" bar for product pages.
@@ -15,6 +16,7 @@ import { cn, formatPrice } from "@/lib/utils";
  */
 export function StickyBuyBar({ product }: { product: Product }) {
   const { addItem, count } = useCart();
+  const comingSoon = useComingSoon();
   const [buyBoxVisible, setBuyBoxVisible] = useState(true);
   const [isDesktop, setIsDesktop] = useState(false);
   const [added, setAdded] = useState(false);
@@ -75,6 +77,14 @@ export function StickyBuyBar({ product }: { product: Product }) {
               </span>
             )}
           </Link>
+          {comingSoon ? (
+            <NotifyMeLink
+              productName={product.name}
+              className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-teal-deep px-5 text-sm font-medium text-ivory transition-colors hover:bg-emerald sm:px-7"
+            >
+              Notify me
+            </NotifyMeLink>
+          ) : (
           <button
             type="button"
             disabled={!product.inStock}
@@ -97,6 +107,7 @@ export function StickyBuyBar({ product }: { product: Product }) {
               </>
             )}
           </button>
+          )}
         </div>
       </div>
     </>

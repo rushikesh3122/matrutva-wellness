@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Product } from "@/types/product";
 import { cn, formatPrice } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
+import { ComingSoonBadge } from "@/components/product/ComingSoon";
 
 /** One product, told in a single row: photo, name, a line of copy, three facts and a buy button. */
 export function ProductStory({
@@ -65,6 +66,7 @@ export function ProductStory({
               {price ? `Shop · ${price}` : "Shop now"}
               <span aria-hidden>→</span>
             </Link>
+            <ComingSoonBadge />
           </div>
           <p className="eyebrow mt-5 text-[0.62rem] tracking-[0.2em] text-forest/65">{product.quantity}</p>
         </Reveal>

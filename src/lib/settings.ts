@@ -22,6 +22,8 @@ export type StoreSettings = {
   cod: boolean;
   /** FSSAI licence number, shown in the footer once set. */
   fssai: string;
+  /** Taking orders. Off = "Coming soon": everything stays visible, buying becomes "Notify me". */
+  salesOpen: boolean;
 };
 
 export const defaultSettings: StoreSettings = {
@@ -38,6 +40,7 @@ export const defaultSettings: StoreSettings = {
   freeShippingAbove: null,
   cod: false,
   fssai: "",
+  salesOpen: false,
 };
 
 /** Database row → settings, falling back to the defaults for anything missing. */
@@ -59,12 +62,20 @@ export function settingsFromRow(row: Record<string, unknown> | null | undefined)
     freeShippingAbove: num("free_shipping_above"),
     cod: row.cod_enabled === true,
     fssai: str("fssai", ""),
+    salesOpen: row.sales_open === true,
   };
 }
 
 /** WhatsApp chat link with a prefilled message, or null when no number is set. */
 export function whatsappHref(s: StoreSettings, message = "Hi Matrutva Wellness, I'd like to place an order."): string | null {
   return s.whatsapp ? `https://wa.me/${s.whatsapp}?text=${encodeURIComponent(message)}` : null;
+}
+
+/** "Notify me at launch" link: WhatsApp when a number is set, otherwise email. */
+export function notifyHref(s: StoreSettings, productName?: string): string {
+  const what = productName ? `${productName} is` : "your products are";
+  const msg = `Hi Matrutva Wellness, please let me know when ${what} available to order.`;
+  return whatsappHref(s, msg) ?? `mailto:${s.email}?subject=${encodeURIComponent("Notify me at launch")}&body=${encodeURIComponent(msg)}`;
 }
 
 /** Shipping for a subtotal: ₹ amount, 0 for free, or null when it is confirmed with the customer. */
