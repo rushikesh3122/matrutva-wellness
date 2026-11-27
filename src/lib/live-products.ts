@@ -1,4 +1,4 @@
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { products as catalogue } from "@/data/products";
 import type { Product } from "@/types/product";
 
@@ -12,6 +12,7 @@ type Row = { slug: string; price: number; mrp: number | null; active: boolean; t
 export async function getLiveProducts(): Promise<Product[]> {
   "use cache";
   cacheLife("minutes");
+  cacheTag("products");
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -27,7 +28,8 @@ export async function getLiveProducts(): Promise<Product[]> {
     const bySlug = new Map(rows.map((r) => [r.slug, r]));
     return catalogue.map((p) => {
       const row = bySlug.get(p.slug);
-      if (!row) return p;
+      // Hidden products aren't returned to the public, so a missing row means "not for sale".
+      if (!row) return { ...p, inStock: false };
       return { ...p, price: row.price, mrp: row.mrp, inStock: row.active && !(row.track_stock && row.stock <= 0) };
     });
   } catch {

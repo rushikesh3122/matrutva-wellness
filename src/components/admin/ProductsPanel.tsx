@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
+import { refreshShop } from "@/app/admin/actions";
 import { cn } from "@/lib/utils";
 import { btnCls, inputCls, rupees } from "./ui";
 
@@ -100,6 +101,12 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
   const low = p.track_stock && p.stock <= p.low_stock_alert;
   const id = p.slug;
 
+  async function publish(done: string) {
+    const { data } = await getSupabase().auth.getSession();
+    const ok = await refreshShop(data.session?.access_token ?? "").catch(() => false);
+    setMsg(ok ? `${done}. The website is updated.` : `${done}. The website will show it within a few minutes.`);
+  }
+
   async function saveDetails() {
     const price = Number(f.price);
     const mrp = f.mrp ? Number(f.mrp) : null;
@@ -111,8 +118,9 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
       .update({ price, mrp, active: f.active, track_stock: f.track, low_stock_alert: Number(f.low) || 0, updated_at: new Date().toISOString() })
       .eq("slug", p.slug);
     setBusy(false);
-    setMsg(error ? error.message : "Saved");
-    if (!error) onSaved();
+    if (error) return setMsg(error.message);
+    await publish("Saved");
+    onSaved();
   }
 
   async function adjustStock() {
@@ -123,11 +131,10 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
       .from("stock_movements")
       .insert({ product_slug: p.slug, change, reason: adj.reason || "Adjustment", batch: adj.batch || null, expiry: adj.expiry || null });
     setBusy(false);
-    setMsg(error ? error.message : "Stock updated");
-    if (!error) {
-      setAdj({ change: "", reason: "New batch received", batch: "", expiry: "" });
-      onSaved();
-    }
+    if (error) return setMsg(error.message);
+    await publish("Stock updated");
+    setAdj({ change: "", reason: "New batch received", batch: "", expiry: "" });
+    onSaved();
   }
 
   return (
