@@ -1,8 +1,8 @@
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { products as catalogue } from "@/data/products";
-import type { Product } from "@/types/product";
+import type { Product, ProductImage } from "@/types/product";
 
-type Row = { slug: string; price: number; mrp: number | null; active: boolean; track_stock: boolean; stock: number };
+type Row = { slug: string; price: number; mrp: number | null; active: boolean; track_stock: boolean; stock: number; images?: ProductImage[] | null };
 
 /**
  * Prices and stock from the admin dashboard (Supabase), merged into the product catalogue.
@@ -12,13 +12,14 @@ type Row = { slug: string; price: number; mrp: number | null; active: boolean; t
 export async function getLiveProducts(): Promise<Product[]> {
   "use cache";
   cacheLife("minutes");
+  cacheTag("products");
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return catalogue;
 
   try {
-    const res = await fetch(`${url}/rest/v1/products?select=slug,price,mrp,active,track_stock,stock`, {
+    const res = await fetch(`${url}/rest/v1/products?select=*`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
       signal: AbortSignal.timeout(4000),
     });
@@ -27,8 +28,16 @@ export async function getLiveProducts(): Promise<Product[]> {
     const bySlug = new Map(rows.map((r) => [r.slug, r]));
     return catalogue.map((p) => {
       const row = bySlug.get(p.slug);
-      if (!row) return p;
-      return { ...p, price: row.price, mrp: row.mrp, inStock: row.active && !(row.track_stock && row.stock <= 0) };
+      // Hidden products aren't returned to the public, so a missing row means "not for sale".
+      if (!row) return { ...p, inStock: false };
+      const images = Array.isArray(row.images) ? row.images.filter((i) => i && typeof i.src === "string" && i.src) : [];
+      return {
+        ...p,
+        price: row.price,
+        mrp: row.mrp,
+        images: images.length ? images.map((i) => ({ src: i.src, alt: i.alt || p.name })) : p.images,
+        inStock: row.active && !(row.track_stock && row.stock <= 0),
+      };
     });
   } catch {
     return catalogue;
