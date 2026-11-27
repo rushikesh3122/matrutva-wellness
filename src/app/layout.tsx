@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileShopBar } from "@/components/layout/MobileShopBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CartProvider } from "@/context/CartContext";
+import { CartToast } from "@/components/cart/CartToast";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { getSettings } from "@/lib/live-settings";
@@ -125,6 +126,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <Suspense fallback={null}>
               <MobileShopBar />
             </Suspense>
+            <CartToast />
           </CartProvider>
         </SettingsProvider>
         <JsonLd data={organizationJsonLd(settings)} />

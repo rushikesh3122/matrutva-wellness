@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Minus, Plus } from "lucide-react";
 import type { Product } from "@/types/product";
-import { maxFor, useCart } from "@/context/CartContext";
+import { limitMessage, maxFor, useCart } from "@/context/CartContext";
 
 /** Quantity stepper and "Add to cart" button. */
 export function AddToCart({ product }: { product: Product }) {
-  const { addItem, items, ready, setLimit } = useCart();
+  const { addItem, items, ready, setLimit, notify } = useCart();
   const max = maxFor(product);
   const inCart = items.find((i) => i.id === product.id)?.quantity ?? 0;
   const left = Math.max(0, max - inCart);
@@ -31,13 +31,13 @@ export function AddToCart({ product }: { product: Product }) {
         <span className="w-6 text-center" aria-live="polite" aria-label={`Quantity ${shown}`}>
           {shown}
         </span>
-        <button type="button" aria-label="Increase quantity" onClick={() => setQty(Math.min(left, shown + 1))} disabled={shown >= left} className="grid size-12 place-items-center text-emerald disabled:opacity-30">
+        <button type="button" aria-label="Increase quantity" onClick={() => (shown >= left ? notify(limitMessage(product)) : setQty(shown + 1))} aria-disabled={shown >= left || undefined} className="grid size-12 place-items-center text-emerald aria-disabled:opacity-30">
           <Plus className="size-4" />
         </button>
       </div>
       <button
         type="button"
-        disabled={!product.inStock || left === 0}
+        disabled={!product.inStock}
         onClick={() => {
           if (addItem(product, shown) === 0) return;
           setQty(1);

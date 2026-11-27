@@ -58,7 +58,7 @@ export function CartSummary() {
                 <span className="w-10 text-center" aria-live="polite" aria-label={`Quantity ${item.quantity}`}>
                   {item.quantity}
                 </span>
-                <button type="button" aria-label={`Increase ${item.name}`} onClick={() => updateQuantity(item.id, item.quantity + 1)} disabled={item.quantity >= maxFor(item)} className="grid size-12 place-items-center text-emerald disabled:opacity-30">
+                <button type="button" aria-label={`Increase ${item.name}`} onClick={() => updateQuantity(item.id, item.quantity + 1)} aria-disabled={item.quantity >= maxFor(item) || undefined} className="grid size-12 place-items-center text-emerald aria-disabled:opacity-30">
                   <Plus className="size-4" />
                 </button>
               </div>
