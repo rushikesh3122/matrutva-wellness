@@ -13,7 +13,7 @@ export function ReviewsSection({ reviews, title = "In their words." }: { reviews
           {reviews.slice(0, 6).map((r) => (
             <li key={r.id} className="flex flex-col rounded-card border border-gold/20 bg-white p-7 shadow-soft">
               {r.rating && (
-                <p className="flex gap-0.5 text-gold" aria-label={`Rated ${r.rating} out of 5`}>
+                <p className="flex gap-0.5 text-gold" role="img" aria-label={`Rated ${r.rating} out of 5`}>
                   {Array.from({ length: 5 }, (_, i) => (
                     <Star key={i} className="size-4" fill={i < r.rating! ? "currentColor" : "none"} strokeWidth={1.5} aria-hidden />
                   ))}

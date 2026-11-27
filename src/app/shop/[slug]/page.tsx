@@ -117,7 +117,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
               <span className="font-display text-4xl text-emerald">{price ?? "Price coming soon"}</span>
               {product.mrp && product.price && product.mrp > product.price && (
                 <>
-                  <span className="text-lg text-forest/60 line-through">
+                  <span className="text-lg text-forest/75 line-through">
                     <span className="sr-only">MRP </span>
                     {formatPrice(product.mrp)}
                   </span>

@@ -139,7 +139,7 @@ export function ProductCard({
             {formatPrice(product.price)}
           </span>
           {discount > 0 && product.mrp && (
-            <span className="text-sm text-forest/60 line-through">
+            <span className="text-sm text-forest/75 line-through">
               {formatPrice(product.mrp)}
             </span>
           )}

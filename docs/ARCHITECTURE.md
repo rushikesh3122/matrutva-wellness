@@ -27,7 +27,7 @@ not in the browser.
 ## Common future changes
 
 ### Move to a Supabase project in another region (e.g. Mumbai)
-1. Create the new project and run `supabase/schema.sql`, then `02`–`06` in order.
+1. Create the new project and run `supabase/schema.sql`, then `02`–`07` in order.
 2. Create your admin user and run the `admins` insert (end of `schema.sql`).
 3. Put the new URL and publishable key in `.env`. No code changes.
 
