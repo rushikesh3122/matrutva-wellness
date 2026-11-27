@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { HandHeart, Leaf, MessageCircleHeart, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { siteConfig } from "@/lib/site";
-import { useCart } from "@/context/CartContext";
+import { maxFor, useCart } from "@/context/CartContext";
 import { useSettings } from "@/context/SettingsContext";
 import { shippingFor } from "@/lib/settings";
 import { cn, formatPrice } from "@/lib/utils";
@@ -48,6 +48,7 @@ export function CartSummary() {
                 {item.name}
               </Link>
               <p className="mt-1.5 text-forest/70">{formatPrice(item.price)}</p>
+              {item.max !== undefined && item.quantity >= item.max && <p className="mt-1 text-sm text-terracotta-deep">Only {item.max} available</p>}
             </div>
             <div className="col-span-2 flex items-center gap-4 md:col-span-1">
               <div className="flex h-12 items-center rounded-xl border border-forest/25 bg-white">
@@ -57,7 +58,7 @@ export function CartSummary() {
                 <span className="w-10 text-center" aria-live="polite" aria-label={`Quantity ${item.quantity}`}>
                   {item.quantity}
                 </span>
-                <button type="button" aria-label={`Increase ${item.name}`} onClick={() => updateQuantity(item.id, Math.min(20, item.quantity + 1))} className="grid size-12 place-items-center text-emerald">
+                <button type="button" aria-label={`Increase ${item.name}`} onClick={() => updateQuantity(item.id, item.quantity + 1)} disabled={item.quantity >= maxFor(item)} className="grid size-12 place-items-center text-emerald disabled:opacity-30">
                   <Plus className="size-4" />
                 </button>
               </div>

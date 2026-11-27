@@ -25,6 +25,10 @@ export type Product = {
   reviewCount?: number;
   tags?: string[];
   inStock: boolean;
+  /** Most a customer can order: the stock left when stock is tracked in /admin. */
+  maxQuantity?: number;
+  /** True when stock is at or below the low-stock warning set in /admin. */
+  fewLeft?: boolean;
   featured?: boolean;
   /** Short eyebrow line, e.g. "Rise · Spirulina" */
   eyebrow?: string;

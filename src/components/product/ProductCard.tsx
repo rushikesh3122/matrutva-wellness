@@ -46,7 +46,7 @@ export function ProductCard({
 
   function handleAdd() {
     if (onAddToCart) onAddToCart(product);
-    else addItem(product);
+    else if (addItem(product) === 0) return;
     setAdded(true);
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setAdded(false), 1800);

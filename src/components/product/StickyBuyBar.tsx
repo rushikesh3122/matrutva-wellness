@@ -79,7 +79,7 @@ export function StickyBuyBar({ product }: { product: Product }) {
             type="button"
             disabled={!product.inStock}
             onClick={() => {
-              addItem(product, 1);
+              if (addItem(product, 1) === 0) return;
               setAdded(true);
               window.clearTimeout(timer.current);
               timer.current = window.setTimeout(() => setAdded(false), 1800);
