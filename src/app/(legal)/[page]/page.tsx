@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { PagePlaceholder } from "@/components/layout/PagePlaceholder";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { FaqList } from "@/components/ui/FaqList";
-import { products } from "@/data/products";
+import { getLiveProducts } from "@/lib/live-products";
 
 /** Support and policy pages linked from the footer. Replace each with final content. */
 const pages: Record<string, { title: string; description: string }> = {
@@ -40,7 +40,7 @@ async function LegalDetails({ params }: Pick<PageProps<"/[page]">, "params">) {
   const p = pages[page];
   if (!p) notFound();
   if (page === "faqs") {
-    const items = products.flatMap((product) => product.faq ?? []);
+    const items = (await getLiveProducts()).flatMap((product) => product.faq ?? []);
     return (
       <>
         <PageIntro eyebrow="Customer Care" title="Good to know." description={p.description} />

@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 import { products as catalogue } from "@/data/products";
 import type { ProductImage } from "@/types/product";
 import { ImagesEditor } from "./ImagesEditor";
-import { btnCls, inputCls, rupees } from "./ui";
+import { DetailsEditor, initialDetails, type ProductDetails } from "./DetailsEditor";
+import { btnCls, ghostCls, inputCls, rupees } from "./ui";
 
 type Product = {
   slug: string;
@@ -20,6 +21,7 @@ type Product = {
   stock: number;
   low_stock_alert: number;
   images: ProductImage[] | null;
+  [column: string]: unknown;
 };
 type Movement = { id: number; product_slug: string; change: number; reason: string; batch: string | null; expiry: string | null; order_number: string | null; created_at: string };
 
@@ -51,11 +53,12 @@ export function ProductsPanel() {
     <div className="space-y-10">
       {error && <p className="text-sm text-terracotta-deep">{error}</p>}
       <p className="text-sm text-forest/70">
-        Changes show on the website as soon as you save. Product descriptions and label text are in the website code (ask Claude).
+        Changes show on the website as soon as you save.
       </p>
       {products.map((p) => (
         <ProductEditor key={p.slug} product={p} onSaved={load} />
       ))}
+      <AddProduct existing={products.map((p) => p.slug)} onAdded={load} />
 
       <section aria-labelledby="history-title">
         <h2 id="history-title" className="font-display text-2xl text-emerald">
@@ -112,12 +115,23 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
   }
 
   const builtIn = catalogue.find((c) => c.slug === p.slug)?.images ?? [];
-  const usingBuiltIn = !p.images?.length;
+  const usingBuiltIn = !p.images?.length && builtIn.length > 0;
 
   async function saveImages(images: ProductImage[]) {
     const { error } = await getSupabase().from("products").update({ images, updated_at: new Date().toISOString() }).eq("slug", p.slug);
     if (error) return error.message;
     await publish("Photos saved");
+    onSaved();
+    return null;
+  }
+
+  async function saveText(t: ProductDetails) {
+    const { error } = await getSupabase()
+      .from("products")
+      .update({ ...t, name: t.name.trim(), updated_at: new Date().toISOString() })
+      .eq("slug", p.slug);
+    if (error) return error.message.includes("column") ? "Run supabase/04-product-details.sql in Supabase first." : error.message;
+    await publish("Product text saved");
     onSaved();
     return null;
   }
@@ -251,7 +265,90 @@ function ProductEditor({ product: p, onSaved }: { product: Product; onSaved: () 
           {msg}
         </p>
       )}
+      <DetailsEditor slug={p.slug} initial={initialDetails(p, catalogue.find((c) => c.slug === p.slug))} onSave={saveText} />
       <ImagesEditor slug={p.slug} name={p.name} initial={usingBuiltIn ? builtIn : p.images!} usingBuiltIn={usingBuiltIn} onSave={saveImages} />
+    </section>
+  );
+}
+
+/** Turns a name into a web address part: "Spirulina Powder 100 g" → "spirulina-powder-100-g". */
+const toSlug = (name: string) =>
+  name
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+
+/** Adds a new product, hidden until you've added its text and photos and ticked "Show on website". */
+function AddProduct({ existing, onAdded }: { existing: string[]; onAdded: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const slug = toSlug(name);
+
+  async function add() {
+    const amount = Number(price);
+    if (!slug) return setMsg("Enter a product name.");
+    if (existing.includes(slug)) return setMsg("A product with this name already exists.");
+    if (!Number.isInteger(amount) || amount <= 0) return setMsg("Enter a price in whole rupees.");
+    setBusy(true);
+    const { error } = await getSupabase()
+      .from("products")
+      .insert({ slug, name: name.trim(), price: amount, active: false, track_stock: true, stock: 0, low_stock_alert: 5, images: [] });
+    setBusy(false);
+    if (error) return setMsg(error.message);
+    setName("");
+    setPrice("");
+    setOpen(false);
+    onAdded();
+  }
+
+  if (!open)
+    return (
+      <button type="button" onClick={() => setOpen(true)} className={ghostCls}>
+        + Add a product
+      </button>
+    );
+
+  return (
+    <section aria-labelledby="add-title" className="rounded-2xl border border-dashed border-forest/25 bg-white p-6">
+      <h2 id="add-title" className="font-display text-2xl text-emerald">
+        Add a product
+      </h2>
+      <p className="mt-1 text-sm text-forest/70">
+        It starts hidden. Add its text, photos and stock, then tick &ldquo;Show on website&rdquo;.
+      </p>
+      <div className="mt-5 grid gap-4 sm:grid-cols-[2fr_1fr]">
+        <div>
+          <label htmlFor="new-name" className="text-sm font-medium">
+            Name
+          </label>
+          <input id="new-name" value={name} onChange={(e) => setName(e.target.value)} className={cn(inputCls, "mt-1.5")} placeholder="Spirulina Capsules, 120" />
+          {slug && <p className="mt-1 text-xs text-forest/65">Web address: /shop/{slug} (can&apos;t be changed later)</p>}
+        </div>
+        <div>
+          <label htmlFor="new-price" className="text-sm font-medium">
+            Price (₹)
+          </label>
+          <input id="new-price" inputMode="numeric" value={price} onChange={(e) => setPrice(e.target.value)} className={cn(inputCls, "mt-1.5")} />
+        </div>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button type="button" onClick={add} disabled={busy} className={btnCls}>
+          {busy ? "Adding…" : "Add product"}
+        </button>
+        <button type="button" onClick={() => setOpen(false)} className={ghostCls}>
+          Cancel
+        </button>
+        {msg && (
+          <p role="status" className="text-sm text-terracotta-deep">
+            {msg}
+          </p>
+        )}
+      </div>
     </section>
   );
 }
