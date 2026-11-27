@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, products } from "@/data/products";
+import { products } from "@/data/products";
 import { getLiveProduct } from "@/lib/live-products";
 import { siteConfig } from "@/lib/site";
 import { BuyNowButton } from "@/components/product/BuyNowButton";
@@ -23,7 +23,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/shop/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getLiveProduct(slug);
   if (!product) return {};
   return {
     title: product.name,

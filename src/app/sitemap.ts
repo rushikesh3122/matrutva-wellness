@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { allPages } from "@/lib/site";
 import { siteUrl } from "@/lib/seo";
-import { products } from "@/data/products";
+import { getLiveProducts } from "@/lib/live-products";
 
 /** Lists every public page. Product URLs are added automatically from the product data. */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const products = await getLiveProducts();
   const pages = allPages.map((item) => ({
     url: `${siteUrl}${item.href === "/" ? "" : item.href}`,
     changeFrequency: "weekly" as const,
