@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatPrice, cn } from "@/lib/utils";
-import { indianStates, LAST_ORDER_KEY, newOrderNumber, paymentLabel, saveOrder, type CheckoutDetails, type PaymentMethod, type PlacedOrder } from "@/lib/order";
+import { indianStates, LAST_ORDER_KEY, newOrderNumber, saveOrder, type CheckoutDetails, type PaymentMethod, type PlacedOrder } from "@/lib/order";
+import { paymentProviders } from "@/backend/payments";
 import { shippingFor } from "@/lib/settings";
 import { useSettings } from "@/context/SettingsContext";
 import { OrderSummary } from "./OrderSummary";
@@ -83,8 +84,10 @@ export function CheckoutForm() {
   const { items, ready, subtotal, clear } = useCart();
   const settings = useSettings();
   const ship = shippingFor(settings, subtotal);
-  const [payment, setPayment] = useState<PaymentMethod>("prepaid");
-  const pay: PaymentMethod = settings.cod ? payment : "prepaid";
+  const providers = paymentProviders(settings);
+  const [payment, setPayment] = useState<PaymentMethod>(providers[0].id);
+  const provider = providers.find((p) => p.id === payment) ?? providers[0];
+  const pay: PaymentMethod = provider.id;
   const [d, setD] = useState<CheckoutDetails>(empty);
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -156,7 +159,9 @@ export function CheckoutForm() {
     } catch {
       /* storage full or blocked */
     }
-    router.push("/checkout/confirm");
+    const next = saved ? await provider.start({ number: order.number, total: order.total ?? 0, phone: details.phone, email: details.email }) : null;
+    if (next) window.location.assign(next.redirectUrl);
+    else router.push("/checkout/confirm");
     clear();
   }
 
@@ -211,11 +216,11 @@ export function CheckoutForm() {
             <textarea {...a11y("notes")} rows={3} className={cn(input, "h-auto py-3")} placeholder="Delivery instructions, preferred time to call, etc." />
           </Field>
         </div>
-        {settings.cod && (
+        {providers.length > 1 && (
           <fieldset className="mt-8">
             <legend className="font-display text-xl text-emerald">Payment</legend>
             <div className="mt-4 grid gap-3">
-              {(["prepaid", "cod"] as const).map((m) => (
+              {providers.map(({ id: m, label }) => (
                 <label
                   key={m}
                   className={cn(
@@ -224,7 +229,7 @@ export function CheckoutForm() {
                   )}
                 >
                   <input type="radio" name="payment" value={m} checked={payment === m} onChange={() => setPayment(m)} className="size-5 accent-teal-deep" />
-                  {paymentLabel[m]}
+                  {label}
                 </label>
               ))}
             </div>

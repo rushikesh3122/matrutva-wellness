@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { products as catalogue } from "@/data/products";
+import { fetchProductRows } from "@/backend/catalog";
 import type { Product, ProductImage } from "@/types/product";
 
 /** A row of the Supabase `products` table. Text columns are null until edited in /admin. */
@@ -69,29 +70,17 @@ export async function getLiveProducts(): Promise<Product[]> {
   cacheLife("minutes");
   cacheTag("products");
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) return catalogue;
-
-  try {
-    const res = await fetch(`${url}/rest/v1/products?select=*&order=sort.asc,name.asc`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-      signal: AbortSignal.timeout(4000),
-    });
-    if (!res.ok) return catalogue;
-    const rows = (await res.json()) as ProductRow[];
-    const bySlug = new Map(rows.map((r) => [r.slug, r]));
-    const known = new Set(catalogue.map((p) => p.slug));
-    // Hidden products aren't returned to the public, so a missing row means "not for sale".
-    const fromCatalogue = catalogue.map((p) => {
-      const row = bySlug.get(p.slug);
-      return row ? (mergeProduct(row, p) as Product) : { ...p, inStock: false };
-    });
-    const added = rows.filter((r) => !known.has(r.slug)).map((r) => mergeProduct(r)).filter((p): p is Product => p !== null);
-    return [...fromCatalogue, ...added];
-  } catch {
-    return catalogue;
-  }
+  const rows = await fetchProductRows();
+  if (!rows) return catalogue;
+  const bySlug = new Map(rows.map((r) => [r.slug, r]));
+  const known = new Set(catalogue.map((p) => p.slug));
+  // Hidden products aren't returned to the public, so a missing row means "not for sale".
+  const fromCatalogue = catalogue.map((p) => {
+    const row = bySlug.get(p.slug);
+    return row ? (mergeProduct(row, p) as Product) : { ...p, inStock: false };
+  });
+  const added = rows.filter((r) => !known.has(r.slug)).map((r) => mergeProduct(r)).filter((p): p is Product => p !== null);
+  return [...fromCatalogue, ...added];
 }
 
 export async function getLiveProduct(slug: string) {

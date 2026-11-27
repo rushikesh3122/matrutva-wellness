@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
-import { getSupabase } from "@/lib/supabase";
-import { refreshShop } from "@/app/admin/actions";
+import { addReview, deleteReview, listProductNames, listReviews, refreshWebsite, updateReview } from "@/backend/admin";
 import { cn } from "@/lib/utils";
 import { btnCls, ghostCls, inputCls } from "./ui";
 
@@ -22,11 +21,10 @@ export function ReviewsPanel() {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    const sb = getSupabase();
-    const [r, p] = await Promise.all([sb.from("reviews").select("*").order("created_at", { ascending: false }), sb.from("products").select("slug,name").order("name")]);
-    setError(r.error ? (r.error.message.includes("reviews") ? "Run supabase/05-track-and-reviews.sql in the Supabase SQL Editor first." : r.error.message) : "");
-    setReviews((r.data as Review[]) ?? []);
-    setProducts((p.data as Product[]) ?? []);
+    const [r, p] = await Promise.all([listReviews<Review>(), listProductNames()]);
+    setError(r.error ? (r.error.includes("reviews") ? "Run supabase/05-track-and-reviews.sql in the Supabase SQL Editor first." : r.error) : "");
+    setReviews(r.data);
+    setProducts(p);
   }, []);
 
   useEffect(() => {
@@ -35,42 +33,38 @@ export function ReviewsPanel() {
   }, [load]);
 
   async function publish() {
-    const { data } = await getSupabase().auth.getSession();
-    await refreshShop(data.session?.access_token ?? "").catch(() => false);
+    await refreshWebsite();
   }
 
   async function add() {
     if (!f.name.trim()) return setMsg("Add the customer's name (first name is fine).");
     if (f.quote.trim().length < 5) return setMsg("Add what the customer said.");
     setBusy(true);
-    const { error } = await getSupabase()
-      .from("reviews")
-      .insert({
-        name: f.name.trim(),
-        city: f.city.trim() || null,
-        product_slug: f.product_slug || null,
-        rating: f.rating ? Number(f.rating) : null,
-        quote: f.quote.trim(),
-        source: f.source.trim() || null,
-        approved: false,
-      });
+    const error = await addReview({
+      name: f.name.trim(),
+      city: f.city.trim() || null,
+      product_slug: f.product_slug || null,
+      rating: f.rating ? Number(f.rating) : null,
+      quote: f.quote.trim(),
+      source: f.source.trim() || null,
+    });
     setBusy(false);
-    if (error) return setMsg(error.message);
+    if (error) return setMsg(error);
     setF(blank);
     setMsg("Review added. Tick “Show on website” when you're ready.");
     void load();
   }
 
   async function update(id: number, patch: Partial<Review>) {
-    const { error } = await getSupabase().from("reviews").update(patch).eq("id", id);
-    if (error) return setMsg(error.message);
+    const error = await updateReview(id, patch);
+    if (error) return setMsg(error);
     await publish();
     void load();
   }
 
   async function remove(id: number) {
-    const { error } = await getSupabase().from("reviews").delete().eq("id", id);
-    if (error) return setMsg(error.message);
+    const error = await deleteReview(id);
+    if (error) return setMsg(error);
     await publish();
     void load();
   }

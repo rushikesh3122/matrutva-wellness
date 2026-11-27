@@ -4,19 +4,9 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Check, Search } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
+import { trackOrder, type TrackedOrder } from "@/backend/orders";
 
-type Tracked = {
-  number: string;
-  status: "new" | "confirmed" | "packed" | "shipped" | "delivered" | "cancelled";
-  tracking: string | null;
-  created_at: string;
-  subtotal: number;
-  shipping: number | null;
-  total: number;
-  payment: string | null;
-  city: string;
-  items: { name: string; quantity: number; price: number }[] | null;
-};
+type Tracked = TrackedOrder;
 
 const steps = [
   { key: "new", label: "Order received" },
@@ -42,25 +32,12 @@ export function TrackOrderForm() {
     const digits = phone.replace(/\D/g, "").slice(-10);
     if (!number.trim()) return setError("Enter your order number, e.g. MW-261127-4821.");
     if (!/^[6-9]\d{9}$/.test(digits)) return setError("Enter the 10-digit mobile number you ordered with.");
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-    if (!url || !key) return setError("Order tracking isn't available right now. Please contact us with your order number.");
     setBusy(true);
     setError("");
-    try {
-      const res = await fetch(`${url}/rest/v1/rpc/track_order`, {
-        method: "POST",
-        headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ order_number: number.trim(), phone: digits }),
-        signal: AbortSignal.timeout(10000),
-      });
-      const data = res.ok ? ((await res.json()) as Tracked | null) : null;
-      if (!res.ok) setError("Order tracking isn't available right now. Please contact us with your order number.");
-      else if (!data) setError("We couldn't find an order with that number and phone. Please check both and try again.");
-      setOrder(data);
-    } catch {
-      setError("We couldn't reach our system. Please check your connection and try again.");
-    }
+    const data = await trackOrder(number.trim(), digits);
+    if (data === "unavailable") setError("Order tracking isn't available right now. Please contact us with your order number.");
+    else if (!data) setError("We couldn't find an order with that number and phone. Please check both and try again.");
+    setOrder(data === "unavailable" ? null : data);
     setBusy(false);
   }
 

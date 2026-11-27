@@ -1,5 +1,7 @@
 import type { CartItem } from "@/context/CartContext";
 import { siteConfig } from "@/lib/site";
+import { placeOrder } from "@/backend/orders";
+import { paymentLabel, type PaymentMethodId } from "@/backend/payments";
 import { whatsappHref, type StoreSettings } from "@/lib/settings";
 import { formatPrice } from "@/lib/utils";
 
@@ -32,56 +34,30 @@ export type PlacedOrder = {
   payment?: PaymentMethod;
 };
 
-export type PaymentMethod = "prepaid" | "cod";
-export const paymentLabel: Record<PaymentMethod, string> = {
-  prepaid: "Pay before dispatch (UPI / bank transfer)",
-  cod: "Cash on delivery",
-};
+export type PaymentMethod = PaymentMethodId;
 
 /**
- * Saves the order through the database function `place_order` (prices are taken from the
- * database, never from the browser). Returns null if the database isn't set up or can't be
+ * Saves the order (see src/backend/orders.ts). Returns null if the database isn't set up or can't be
  * reached, so checkout still works by WhatsApp / email.
  */
-export async function saveOrder(
-  items: CartItem[],
-  d: CheckoutDetails,
-  payment: PaymentMethod = "prepaid",
-): Promise<{ number: string; total: number; shipping: number } | { error: string } | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) return null;
-  try {
-    const res = await fetch(`${url}/rest/v1/rpc/place_order`, {
-      method: "POST",
-      headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customer: {
-          first_name: d.firstName,
-          last_name: d.lastName,
-          phone: d.phone,
-          email: d.email,
-          address1: d.address1,
-          address2: d.address2,
-          city: d.city,
-          state: d.state,
-          pincode: d.pincode,
-          gstin: d.gstin,
-          notes: d.notes,
-          payment,
-        },
-        items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
-      }),
-      signal: AbortSignal.timeout(10000),
-    });
-    const body = (await res.json().catch(() => null)) as { number?: string; total?: number; shipping?: number; message?: string } | null;
-    if (res.ok && body?.number) return { number: body.number, total: body.total ?? 0, shipping: body.shipping ?? 0 };
-    // A message raised by place_order (e.g. "Only 3 left of …") is shown to the customer.
-    if (res.status === 400 && body?.message) return { error: body.message };
-    return null;
-  } catch {
-    return null;
-  }
+export function saveOrder(items: CartItem[], d: CheckoutDetails, payment: PaymentMethod = "prepaid") {
+  return placeOrder(
+    {
+      first_name: d.firstName,
+      last_name: d.lastName,
+      phone: d.phone,
+      email: d.email,
+      address1: d.address1,
+      address2: d.address2,
+      city: d.city,
+      state: d.state,
+      pincode: d.pincode,
+      gstin: d.gstin,
+      notes: d.notes,
+      payment,
+    },
+    items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
+  );
 }
 
 export const LAST_ORDER_KEY = "matrutva-last-order";
@@ -114,7 +90,7 @@ export function orderMessage(order: PlacedOrder) {
       order.shipping == null
         ? `Subtotal: ${formatPrice(subtotal)} (shipping to be confirmed)`
         : `Subtotal: ${formatPrice(subtotal)}\nShipping: ${order.shipping === 0 ? "Free" : formatPrice(order.shipping)}\nTotal: ${formatPrice(order.total ?? subtotal + order.shipping)}`,
-      order.payment ? `Payment: ${paymentLabel[order.payment]}` : "",
+      order.payment ? `Payment: ${paymentLabel(order.payment)}` : "",
     ]
       .filter(Boolean)
       .join("\n"),

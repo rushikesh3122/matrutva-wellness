@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import type { Session } from "@supabase/supabase-js";
 import { LogOut } from "lucide-react";
-import { getSupabase, supabaseConfigured } from "@/lib/supabase";
+import { adminConfigured, isAdmin, signIn, signOut, watchAdminUser, type AdminUser } from "@/backend/admin";
 import { cn } from "@/lib/utils";
 import { btnCls, ghostCls, inputCls } from "./ui";
 import { OrdersPanel } from "./OrdersPanel";
@@ -16,26 +15,19 @@ type Gate = "loading" | "signed-out" | "not-admin" | "admin";
 /** Private dashboard: sign in with the Supabase user you added to the `admins` table. */
 export function AdminApp() {
   const [gate, setGate] = useState<Gate>("loading");
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AdminUser | null>(null);
   const [tab, setTab] = useState<"orders" | "products" | "reviews" | "settings">("orders");
 
   useEffect(() => {
-    if (!supabaseConfigured) return;
-    const sb = getSupabase();
-    const check = async (s: Session | null) => {
-      setSession(s);
-      if (!s) return setGate("signed-out");
-      const { data } = await sb.rpc("is_admin");
-      setGate(data === true ? "admin" : "not-admin");
-    };
-    sb.auth.getSession().then(({ data }) => check(data.session));
-    const { data: sub } = sb.auth.onAuthStateChange((_e, s) => {
-      void check(s);
+    if (!adminConfigured) return;
+    return watchAdminUser(async (u) => {
+      setUser(u);
+      if (!u) return setGate("signed-out");
+      setGate((await isAdmin()) ? "admin" : "not-admin");
     });
-    return () => sub.subscription.unsubscribe();
   }, []);
 
-  if (!supabaseConfigured) {
+  if (!adminConfigured) {
     return <p className="text-forest/80">The database is not configured. Add the Supabase values to the .env file.</p>;
   }
   if (gate === "loading") return <div className="h-64 animate-pulse rounded-figure bg-sage/50" aria-hidden />;
@@ -44,9 +36,9 @@ export function AdminApp() {
     return (
       <div className="mx-auto max-w-md rounded-figure border border-forest/10 bg-white p-8 text-center">
         <p className="text-forest/80">
-          {session?.user.email} is signed in but is not an admin. Add it to the <code>admins</code> table (see supabase/schema.sql).
+          {user?.email} is signed in but is not an admin. Add it to the <code>admins</code> table (see supabase/schema.sql).
         </p>
-        <button type="button" className={cn(ghostCls, "mt-6")} onClick={() => getSupabase().auth.signOut()}>
+        <button type="button" className={cn(ghostCls, "mt-6")} onClick={() => void signOut()}>
           Sign out
         </button>
       </div>
@@ -61,8 +53,8 @@ export function AdminApp() {
           <h1 className="mt-2 font-display text-4xl text-emerald">Dashboard</h1>
         </div>
         <div className="flex items-center gap-3 text-sm text-forest/70">
-          <span className="hidden sm:inline">{session?.user.email}</span>
-          <button type="button" className={ghostCls} onClick={() => getSupabase().auth.signOut()}>
+          <span className="hidden sm:inline">{user?.email}</span>
+          <button type="button" className={ghostCls} onClick={() => void signOut()}>
             <LogOut className="size-4" aria-hidden /> Sign out
           </button>
         </div>
@@ -99,8 +91,8 @@ function SignIn() {
     e.preventDefault();
     setBusy(true);
     setError("");
-    const { error: err } = await getSupabase().auth.signInWithPassword({ email, password });
-    if (err) setError(err.message);
+    const err = await signIn(email, password);
+    if (err) setError(err);
     setBusy(false);
   }
 
