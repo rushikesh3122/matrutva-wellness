@@ -1,5 +1,6 @@
 "use client";
 
+import { ComingSoonBadge, NotifyMeLink, useComingSoon } from "./ComingSoon";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -29,6 +30,7 @@ export function ProductCard({
   className,
 }: ProductCardProps) {
   const { addItem } = useCart();
+  const comingSoon = useComingSoon();
   const [added, setAdded] = useState(false);
   const timer = useRef<number | undefined>(undefined);
   const href = `/shop/${product.slug}`;
@@ -96,6 +98,7 @@ export function ProductCard({
               {product.badge}
             </span>
           )}
+          <ComingSoonBadge />
           {discount > 0 && (
             <span className="rounded-full bg-gold px-3 py-1 text-[0.625rem] font-semibold tracking-[0.15em] text-emerald uppercase">
               {discount}% off
@@ -146,6 +149,12 @@ export function ProductCard({
         </div>
 
         <div className="mt-3 flex flex-col gap-2">
+          {comingSoon ? (
+            <NotifyMeLink
+              productName={product.name}
+              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-emerald px-5 text-sm font-medium text-ivory transition-colors hover:bg-teal-deep"
+            />
+          ) : (
           <Button
             variant={added ? "gold" : "primary"}
             size="sm"
@@ -157,6 +166,7 @@ export function ProductCard({
             {added ? "Added to cart" : "Add to cart"}
             <span className="sr-only">: {product.name}</span>
           </Button>
+          )}
           <Button href={href} variant="outline" size="sm" fullWidth>
             View product
             <span className="sr-only">: {product.name}</span>

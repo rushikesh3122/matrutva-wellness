@@ -19,6 +19,7 @@ type Form = {
   free_shipping_above: string;
   cod_enabled: boolean;
   fssai: string;
+  sales_open: boolean;
 };
 
 const blank: Form = {
@@ -35,6 +36,7 @@ const blank: Form = {
   free_shipping_above: "",
   cod_enabled: false,
   fssai: "",
+  sales_open: false,
 };
 
 /** Store settings: contact details, WhatsApp, social links, announcement bar, shipping, cash on delivery, FSSAI. */
@@ -68,6 +70,7 @@ export function SettingsPanel() {
           free_shipping_above: num("free_shipping_above"),
           cod_enabled: r.cod_enabled === true,
           fssai: text("fssai"),
+          sales_open: r.sales_open === true,
         });
       });
   }, []);
@@ -117,6 +120,7 @@ export function SettingsPanel() {
         free_shipping_above: free,
         cod_enabled: f.cod_enabled,
         fssai,
+        sales_open: f.sales_open,
     });
     if (error) {
       setBusy(false);
@@ -131,6 +135,13 @@ export function SettingsPanel() {
   return (
     <div className="space-y-8">
       {error && <p className="rounded-xl bg-terracotta/10 px-4 py-3 text-sm text-terracotta-deep">{error}</p>}
+
+      <Group title="Shop status" note="Off = Coming soon: every page stays visible, but buy buttons become “Notify me” and orders are refused.">
+        <label className="flex items-center gap-3 text-sm font-medium sm:col-span-2">
+          <input type="checkbox" checked={f.sales_open} onChange={(e) => setF({ ...f, sales_open: e.target.checked })} className="size-5 accent-teal-deep" />
+          Open for orders
+        </label>
+      </Group>
 
       <Group title="Orders & contact" note="Empty fields are hidden on the website.">
         <Field label="WhatsApp number for orders" hint="10-digit mobile. Empty = orders go by email." htmlFor="set-whatsapp">

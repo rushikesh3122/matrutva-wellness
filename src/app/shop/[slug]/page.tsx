@@ -10,6 +10,7 @@ import { formatPrice } from "@/lib/utils";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCart } from "@/components/product/AddToCart";
 import { StickyBuyBar } from "@/components/product/StickyBuyBar";
+import { ComingSoonBadge, NotifyMeLink, WhenOpen } from "@/components/product/ComingSoon";
 import { LabelDetails } from "@/components/product/LabelDetails";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { FaqList } from "@/components/ui/FaqList";
@@ -113,7 +114,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
             {product.headline && <p className="mt-3 font-display text-2xl font-light text-teal">{product.headline}</p>}
             <p className="mt-6 max-w-md text-lg leading-[1.625] text-forest/70">{product.description}</p>
 
-            <div className="mt-8 flex items-baseline gap-4">
+            <div className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-2">
               <span className="font-display text-4xl text-emerald">{price ?? "Price coming soon"}</span>
               {product.mrp && product.price && product.mrp > product.price && (
                 <>
@@ -127,6 +128,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
                 </>
               )}
               <span className="eyebrow text-[0.62rem] text-forest/65">{product.quantity}</span>
+              <ComingSoonBadge className="self-center" />
             </div>
             {price && <p className="mt-1 text-sm text-forest/65">Inclusive of all taxes</p>}
             {!product.inStock && <p className="mt-3 font-medium text-terracotta-deep">Currently out of stock. Contact us to be told when it is back.</p>}
@@ -143,6 +145,17 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
             )}
 
             <div id="buy-box" className="mt-10 flex flex-col gap-4">
+              <WhenOpen
+                fallback={
+                  <>
+                    <NotifyMeLink
+                      productName={product.name}
+                      className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald sm:w-auto sm:self-start"
+                    />
+                    <p className="text-sm text-forest/70">We&apos;re launching soon. Orders open shortly.</p>
+                  </>
+                }
+              >
               <BuyNowButton
                 product={product}
                 className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald disabled:opacity-50 sm:w-auto sm:self-start"
@@ -150,6 +163,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/shop/[slug]">, "param
                 {price ? `Buy now · ${price}` : "Buy now"}
               </BuyNowButton>
               <AddToCart product={product} />
+              </WhenOpen>
             </div>
             <p className="mt-6 text-sm text-forest/65">Online payment is not available yet. We confirm every order, shipping and payment with you personally.</p>
           </div>

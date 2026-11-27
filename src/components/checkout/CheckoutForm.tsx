@@ -11,6 +11,7 @@ import { paymentProviders } from "@/backend/payments";
 import { shippingFor } from "@/lib/settings";
 import { useSettings } from "@/context/SettingsContext";
 import { OrderSummary } from "./OrderSummary";
+import { LaunchingSoonNotice } from "@/components/product/ComingSoon";
 import { sendOrderEmails } from "@/app/checkout/actions";
 
 const DETAILS_KEY = "matrutva-checkout-details";
@@ -168,6 +169,7 @@ export function CheckoutForm() {
     clear();
   }
 
+  if (!settings.salesOpen) return <div className="mt-12"><LaunchingSoonNotice /></div>;
   if (!ready || items.length === 0) return <div className="mt-12 h-96 animate-pulse rounded-figure bg-sage/50" aria-hidden />;
 
   return (
