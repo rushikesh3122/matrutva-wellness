@@ -11,6 +11,7 @@ import { paymentProviders } from "@/backend/payments";
 import { shippingFor } from "@/lib/settings";
 import { useSettings } from "@/context/SettingsContext";
 import { OrderSummary } from "./OrderSummary";
+import { sendOrderEmails } from "@/app/checkout/actions";
 
 const DETAILS_KEY = "matrutva-checkout-details";
 
@@ -159,6 +160,8 @@ export function CheckoutForm() {
     } catch {
       /* storage full or blocked */
     }
+    // Confirmation email + shop alert, sent on the server. Checkout doesn't wait if it's slow.
+    if (saved) sendOrderEmails(order.number, details.phone).catch(() => {});
     const next = saved ? await provider.start({ number: order.number, total: order.total ?? 0, phone: details.phone, email: details.email }) : null;
     if (next) window.location.assign(next.redirectUrl);
     else router.push("/checkout/confirm");

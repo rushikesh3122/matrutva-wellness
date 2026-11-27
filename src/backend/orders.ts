@@ -50,3 +50,33 @@ export async function trackOrder(orderNumber: string, phone: string): Promise<Tr
   if (res.status === 0 || res.status >= 400) return "unavailable";
   return res.data;
 }
+
+export type OrderForEmail = {
+  number: string;
+  created_at: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email: string | null;
+  address1: string;
+  address2: string | null;
+  city: string;
+  state: string;
+  pincode: string;
+  gstin: string | null;
+  notes: string | null;
+  subtotal: number;
+  shipping: number | null;
+  total: number;
+  payment: string | null;
+  items: { name: string; quantity: number; price: number }[] | null;
+};
+
+/**
+ * Server side: the order's details for the confirmation emails. Works once per order, for 30 minutes
+ * after it was placed, and only with its phone number (see supabase/06-order-emails.sql).
+ */
+export async function claimOrderForEmail(orderNumber: string, phone: string): Promise<OrderForEmail | null> {
+  const res = await rpc<OrderForEmail | null>("claim_order_email", { order_number: orderNumber, phone });
+  return res.data ?? null;
+}
