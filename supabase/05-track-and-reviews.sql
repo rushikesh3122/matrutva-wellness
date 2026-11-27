@@ -17,8 +17,8 @@ returns json language sql stable security definer set search_path = public as $$
     'items', (select json_agg(json_build_object('name', i.name, 'quantity', i.quantity, 'price', i.price)) from public.order_items i where i.order_id = o.id)
   )
   from public.orders o
-  where upper(o.number) = upper(trim(order_number))
-    and o.phone = right(regexp_replace(phone, '\D', '', 'g'), 10)
+  where upper(o.number) = upper(trim(track_order.order_number))
+    and o.phone = right(regexp_replace(track_order.phone, '\D', '', 'g'), 10)
   limit 1;
 $$;
 revoke all on function public.track_order(text, text) from public;

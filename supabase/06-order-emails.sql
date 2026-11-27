@@ -12,8 +12,8 @@ declare
 begin
   update public.orders x
      set emailed_at = now()
-   where upper(x.number) = upper(trim(order_number))
-     and x.phone = right(regexp_replace(phone, '\D', '', 'g'), 10)
+   where upper(x.number) = upper(trim(claim_order_email.order_number))
+     and x.phone = right(regexp_replace(claim_order_email.phone, '\D', '', 'g'), 10)
      and x.emailed_at is null
      and x.created_at > now() - interval '30 minutes'
   returning * into o;
