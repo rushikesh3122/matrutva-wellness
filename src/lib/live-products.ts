@@ -11,6 +11,7 @@ export type ProductRow = {
   active: boolean;
   track_stock: boolean;
   stock: number;
+  low_stock_alert?: number;
   images?: ProductImage[] | null;
   eyebrow?: string | null;
   headline?: string | null;
@@ -53,6 +54,8 @@ export function mergeProduct(row: ProductRow, base?: Product): Product | null {
     mrp: row.mrp,
     images: finalImages,
     inStock: row.active && !(row.track_stock && row.stock <= 0),
+    maxQuantity: row.track_stock ? Math.max(0, row.stock) : undefined,
+    fewLeft: row.track_stock && row.stock > 0 && row.stock <= (row.low_stock_alert ?? 0),
   };
 }
 
