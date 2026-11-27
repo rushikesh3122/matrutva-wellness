@@ -3,7 +3,7 @@
 Saved plan for future work. Full version (editable): https://claude.ai/artifact/CQz7v6FrrBZqwNUSmaS2Yr
 
 ## Step 0 – Info needed from the owner
-- WhatsApp number (`siteConfig.whatsappNumber` in `src/lib/site.ts`)
+- WhatsApp number (/admin → Settings)
 - Final price, MRP, pack sizes (60 / 120 capsules; 1 / 2 / 3 bottles)
 - Confirm claims: 100% Organic, 60% protein, <45°C (FSSAI)
 - High-resolution white-bottle photo

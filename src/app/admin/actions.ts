@@ -3,7 +3,7 @@
 import { updateTag } from "next/cache";
 
 /**
- * Called by the admin dashboard after a price or stock change, so the shop shows it
+ * Called by the admin dashboard after a price, stock or settings change, so the shop shows it
  * on the next page load instead of after the cache expires. Only works for a signed-in admin.
  */
 export async function refreshShop(accessToken: string): Promise<boolean> {
@@ -19,6 +19,7 @@ export async function refreshShop(accessToken: string): Promise<boolean> {
     });
     if (!res.ok || (await res.json()) !== true) return false;
     updateTag("products");
+    updateTag("settings");
     return true;
   } catch {
     return false;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { orderHref, siteConfig } from "@/lib/site";
+import { whatsappHref } from "@/lib/settings";
+import { getSettings } from "@/lib/live-settings";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 
@@ -10,15 +11,16 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
-  const hasWhatsApp = Boolean(siteConfig.whatsappNumber);
-  const { email, phone, hours, address } = siteConfig.contact;
+export default async function ContactPage() {
+  const settings = await getSettings();
+  const wa = whatsappHref(settings);
+  const { email, phone, hours, address } = settings;
   const rows = [
     { label: "Email", value: email, href: `mailto:${email}` },
-    { label: "Phone", value: phone, href: `tel:${phone.replace(/\s/g, "")}` },
+    { label: "Phone", value: phone, href: `tel:${phone.replace(/[^\d+]/g, "")}` },
     { label: "Hours", value: hours },
     { label: "Address", value: address },
-  ].filter((r) => !/0{5}|^Your /.test(r.value)); // hide placeholder values until real ones are set in siteConfig
+  ].filter((r) => r.value); // empty values (not set in /admin → Settings) stay hidden
   return (
     <>
       <PageIntro
@@ -27,9 +29,9 @@ export default function ContactPage() {
         accent="we're listening."
         description="Tell us what you're reaching for. We'll help you choose and order."
       >
-        {hasWhatsApp && (
+        {wa && (
           <Link
-            href={orderHref()}
+            href={wa}
             className="mt-10 inline-flex h-14 items-center gap-3 rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald"
           >
             <WhatsAppIcon className="size-5" /> Chat on WhatsApp

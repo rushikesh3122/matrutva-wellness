@@ -5,12 +5,18 @@ import Link from "next/link";
 import { HandHeart, Leaf, MessageCircleHeart, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { useCart } from "@/context/CartContext";
+import { useSettings } from "@/context/SettingsContext";
+import { shippingFor } from "@/lib/settings";
 import { cn, formatPrice } from "@/lib/utils";
 import { PrimaryButton } from "@/components/ui/Button";
 
 /** Cart in a simple table: Product · Quantity · Total, then the estimated total and "Check out". */
 export function CartSummary() {
   const { items, ready, subtotal, updateQuantity, removeItem } = useCart();
+  const settings = useSettings();
+  const ship = shippingFor(settings, subtotal);
+  const total = subtotal + (ship ?? 0);
+  const toFree = ship && settings.freeShippingAbove ? settings.freeShippingAbove - subtotal : 0;
 
   // Until the saved cart is read, render the empty state invisibly: same size, so nothing shifts.
   if (!ready || items.length === 0) {
@@ -100,14 +106,19 @@ export function CartSummary() {
         <div className="order-first flex flex-col gap-4 lg:order-none">
           <p className="flex items-baseline justify-between gap-6">
             <span className="text-lg text-emerald">Estimated total</span>
-            <span className="font-display text-3xl text-emerald">{formatPrice(subtotal)}</span>
+            <span className="font-display text-3xl text-emerald">{formatPrice(total)}</span>
           </p>
-          <p className="text-sm text-forest/70">Inclusive of taxes. Shipping and payment are confirmed with you after you place the order.</p>
+          <p className="text-sm text-forest/70">
+            {ship === null
+              ? "Inclusive of taxes. Shipping and payment are confirmed with you after you place the order."
+              : `Inclusive of taxes${ship === 0 ? " and free shipping" : `, with ${formatPrice(ship)} shipping`}.`}
+          </p>
+          {toFree > 0 && <p className="text-sm font-medium text-teal-deep">Add {formatPrice(toFree)} more for free shipping.</p>}
           <Link
             href="/checkout"
             className="mt-2 inline-flex h-14 w-full items-center justify-center rounded-full bg-teal-deep px-8 font-medium text-ivory transition-colors hover:bg-emerald"
           >
-            Check out · {formatPrice(subtotal)}
+            Check out · {formatPrice(total)}
           </Link>
         </div>
       </div>

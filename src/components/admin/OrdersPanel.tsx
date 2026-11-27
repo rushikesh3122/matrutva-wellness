@@ -26,6 +26,9 @@ type Order = {
   gstin: string | null;
   notes: string | null;
   total: number;
+  subtotal?: number;
+  shipping?: number;
+  payment_method?: string;
   tracking: string | null;
   admin_notes: string | null;
   created_at: string;
@@ -171,7 +174,22 @@ function OrderDetail({ order: o, onSaved }: { order: Order; onSaved: () => void 
                 <span>{rupees(i.price * i.quantity)}</span>
               </li>
             ))}
+            {o.shipping !== undefined && (
+              <li className="flex justify-between gap-4 text-forest/75">
+                <span>Shipping</span>
+                <span>{o.shipping === 0 ? "Free / to confirm" : rupees(o.shipping)}</span>
+              </li>
+            )}
+            <li className="flex justify-between gap-4 border-t border-forest/10 pt-1 font-medium">
+              <span>Total</span>
+              <span>{rupees(o.total)}</span>
+            </li>
           </ul>
+          {o.payment_method && (
+            <p className="mt-2">
+              Payment: <strong className="font-medium">{o.payment_method === "cod" ? "Cash on delivery" : "Before dispatch (UPI / bank)"}</strong>
+            </p>
+          )}
         </div>
         <div>
           <h3 className="eyebrow text-forest/70">Deliver to</h3>
